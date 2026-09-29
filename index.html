@@ -1,0 +1,1971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Function and Derivative Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+ --bg:#fbfcfd;--ink:#16263d;--muted:#56657a;--rule:#d5dde7;--accent:#1b3f78}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#10161f;--ink:#e4e9f0;--muted:#9aa7b8;--rule:#2c3747;--accent:#8db4f2}}
+:root[data-theme="dark"]{--bg:#10161f;--ink:#e4e9f0;--muted:#9aa7b8;--rule:#2c3747;--accent:#8db4f2}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif}
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--rule)}
+.tabs-inner{max-width:1200px;margin:0 auto;padding:0 18px;display:flex;gap:4px;overflow-x:auto}
+.tab{font:inherit;font-size:1rem;font-weight:700;padding:12px 16px 10px;border:none;border-bottom:3px solid transparent;background:transparent;color:var(--muted);cursor:pointer;white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.tab:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
+iframe{display:block;width:100%;border:0;height:900px;background:var(--bg)}
+iframe[hidden]{display:none}
+</style>
+</head>
+<body>
+<nav class="tabs"><div class="tabs-inner" role="tablist" aria-label="Explorer">
+  <button class="tab" role="tab" id="t1" aria-controls="p1" aria-selected="true">Function and derivative</button>
+  <button class="tab" role="tab" id="t2" aria-controls="p2" aria-selected="false" tabindex="-1">Piecewise</button>
+</div></nav>
+<iframe id="p1" role="tabpanel" aria-labelledby="t1" title="Function and derivative explorer" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, viewport-fit=cover&quot;&gt;
+&lt;title&gt;Function and Derivative Explorer&lt;/title&gt;
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot;&gt;
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.1/math.min.js&quot;&gt;&lt;/script&gt;
+&lt;style&gt;
+
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#fbfcfd; --paper:#ffffff; --ink:#16263d; --muted:#56657a; --rule:#d5dde7;
+  --grid:#e6edf5; --axis:#7d8ba0; --f:#1b3f78; --fp:#b3261e; --tan:#3c434d;
+  --accent:#1b3f78; --onaccent:#ffffff; --field:#f4f7fa;
+  --warn:#7a4b00; --warnbg:#fff3d9; --err:#8f1d17; --errbg:#fde8e6;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme=&quot;light&quot;]){
+    --bg:#10161f; --paper:#161e29; --ink:#e4e9f0; --muted:#9aa7b8; --rule:#2c3747;
+    --grid:#1f2835; --axis:#627085; --f:#8db4f2; --fp:#f08a7e; --tan:#d4d9e0;
+    --accent:#8db4f2; --onaccent:#0e1520; --field:#1b2430;
+    --warn:#f3c56e; --warnbg:#2c2414; --err:#f4a39b; --errbg:#351a18;
+  }
+}
+:root[data-theme=&quot;dark&quot;]{
+  --bg:#10161f; --paper:#161e29; --ink:#e4e9f0; --muted:#9aa7b8; --rule:#2c3747;
+  --grid:#1f2835; --axis:#627085; --f:#8db4f2; --fp:#f08a7e; --tan:#d4d9e0;
+  --accent:#8db4f2; --onaccent:#0e1520; --field:#1b2430;
+  --warn:#f3c56e; --warnbg:#2c2414; --err:#f4a39b; --errbg:#351a18;
+}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:&quot;Atkinson Hyperlegible&quot;,system-ui,-apple-system,&quot;Segoe UI&quot;,Roboto,sans-serif;
+  font-size:16px;line-height:1.45;font-variant-numeric:tabular-nums}
+.wrap{max-width:1200px;margin:0 auto;padding:22px 18px 36px}
+header{border-bottom:2px solid var(--ink);padding-bottom:12px}
+h1{font-size:1.6rem;line-height:1.15;margin:0;font-weight:700;letter-spacing:-.01em}
+header p{margin:6px 0 0;color:var(--muted);max-width:70ch}
+.layout{display:grid;grid-template-columns:340px minmax(0,1fr);gap:26px;margin-top:18px}
+@media (max-width:880px){.layout{grid-template-columns:minmax(0,1fr)}}
+aside{display:flex;flex-direction:column}
+aside section{padding:14px 0;border-bottom:1px solid var(--rule)}
+aside section:first-child{padding-top:0}
+aside h2{font-size:1.02rem;margin:0 0 10px;font-weight:700}
+.seg{position:relative;display:grid;grid-template-columns:1fr 1fr;border:1.5px solid var(--ink);border-radius:6px;overflow:hidden}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{padding:9px 6px;text-align:center;cursor:pointer;font-size:.93rem;line-height:1.25}
+.seg label + input + label{border-left:1.5px solid var(--ink)}
+.seg input:checked + label{background:var(--ink);color:var(--paper);font-weight:700}
+.seg input:focus-visible + label{outline:3px solid var(--accent);outline-offset:-4px}
+.field{margin-top:12px}
+.field &gt; label{display:block;font-size:.9rem;font-weight:700;margin-bottom:4px}
+input[type=text]{width:100%;font:inherit;font-size:1rem;padding:8px 10px;border:1px solid var(--rule);
+  border-radius:5px;background:var(--field);color:var(--ink)}
+input[type=text]:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hint{font-size:.84rem;color:var(--muted);margin:6px 0 0}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font:inherit;font-size:.86rem;padding:3px 9px;border:1px solid var(--rule);border-radius:4px;
+  background:transparent;color:var(--ink);cursor:pointer}
+.chip:hover{border-color:var(--ink)}
+button{font:inherit}
+.btn{font-weight:700;padding:9px 14px;border-radius:5px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--onaccent)}
+.btn:focus-visible,.chip:focus-visible,select:focus-visible,input[type=range]:focus-visible,input[type=checkbox]:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.msg{display:none;margin-top:12px;padding:9px 11px;border-radius:5px;font-size:.9rem}
+.msg.show{display:block}
+.msg.err{background:var(--errbg);color:var(--err)}
+.msg.warn{background:var(--warnbg);color:var(--warn)}
+.check{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.93rem;cursor:pointer}
+.check input{width:17px;height:17px;accent-color:var(--accent)}
+input[type=range]{width:100%;accent-color:var(--accent);margin:10px 0 2px}
+select{font:inherit;font-size:.93rem;padding:7px 8px;border:1px solid var(--rule);border-radius:5px;background:var(--field);color:var(--ink)}
+.speed{display:flex;align-items:center;gap:8px;font-size:.93rem}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;color:var(--ink);font-weight:700}
+details code{font-family:inherit;background:var(--field);padding:0 4px;border-radius:3px;color:var(--ink)}
+details ul{margin:8px 0 0;padding-left:18px}
+.plots{display:flex;flex-direction:column;gap:18px;min-width:0}
+figure{margin:0;min-width:0}
+figcaption{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.sw{display:inline-block;width:22px;height:0;border-top:3px solid;transform:translateY(-4px)}
+.cap-title{font-weight:700;font-size:1.02rem;overflow-wrap:anywhere}
+.cap-sub{color:var(--muted);font-size:.88rem}
+.canvas-box{border:1px solid var(--rule);border-radius:6px;background:var(--paper);overflow:hidden}
+canvas{display:block;width:100%;height:300px;touch-action:pan-y;cursor:crosshair}
+@media (max-width:600px){canvas{height:230px}}
+.readout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;font-size:.95rem;margin-top:12px}
+.readout dt{color:var(--muted)}
+.readout dd{margin:0;overflow-wrap:anywhere}
+.readout.off{opacity:.45}
+.behavior{margin-top:8px;font-size:.93rem;min-height:1.4em}
+footer{margin-top:22px;color:var(--muted);font-size:.86rem;max-width:80ch}
+@media (prefers-reduced-motion: reduce){ .chip,.btn{transition:none} }
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;wrap&quot;&gt;
+  &lt;header&gt;
+    &lt;h1&gt;Function and derivative explorer&lt;/h1&gt;
+    &lt;p&gt;Enter a function or a derivative, choose an interval, and move the tangent line across the graph to see how its slope traces out f′.&lt;/p&gt;
+  &lt;/header&gt;
+
+  &lt;div class=&quot;layout&quot;&gt;
+    &lt;aside&gt;
+      &lt;section&gt;
+        &lt;h2&gt;What are you entering?&lt;/h2&gt;
+        &lt;div class=&quot;seg&quot; role=&quot;radiogroup&quot; aria-label=&quot;Type of expression&quot;&gt;
+          &lt;input type=&quot;radio&quot; name=&quot;mode&quot; id=&quot;modeF&quot; value=&quot;f&quot; checked&gt;
+          &lt;label for=&quot;modeF&quot;&gt;A function f(x)&lt;/label&gt;
+          &lt;input type=&quot;radio&quot; name=&quot;mode&quot; id=&quot;modeD&quot; value=&quot;d&quot;&gt;
+          &lt;label for=&quot;modeD&quot;&gt;A derivative f′(x)&lt;/label&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;field&quot;&gt;
+          &lt;label for=&quot;expr&quot; id=&quot;exprLabel&quot;&gt;f(x) =&lt;/label&gt;
+          &lt;input type=&quot;text&quot; id=&quot;expr&quot; value=&quot;x^3 - 3x&quot; autocomplete=&quot;off&quot; spellcheck=&quot;false&quot;&gt;
+          &lt;div class=&quot;chips&quot; id=&quot;chips&quot; aria-label=&quot;Examples&quot;&gt;&lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;field&quot;&gt;
+          &lt;label&gt;Interval [a, b]&lt;/label&gt;
+          &lt;div class=&quot;row&quot;&gt;
+            &lt;input type=&quot;text&quot; id=&quot;a&quot; value=&quot;-2.5&quot; aria-label=&quot;Left endpoint a&quot; autocomplete=&quot;off&quot;&gt;
+            &lt;input type=&quot;text&quot; id=&quot;b&quot; value=&quot;2.5&quot; aria-label=&quot;Right endpoint b&quot; autocomplete=&quot;off&quot;&gt;
+          &lt;/div&gt;
+          &lt;p class=&quot;hint&quot;&gt;Endpoints may use pi, for example -2pi or pi/2.&lt;/p&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;field&quot; id=&quot;icBox&quot; hidden&gt;
+          &lt;label&gt;Initial condition f(x₀) = C&lt;/label&gt;
+          &lt;div class=&quot;row&quot;&gt;
+            &lt;input type=&quot;text&quot; id=&quot;ax&quot; value=&quot;&quot; placeholder=&quot;x₀ (default a)&quot; aria-label=&quot;Anchor point x0&quot; autocomplete=&quot;off&quot;&gt;
+            &lt;input type=&quot;text&quot; id=&quot;ac&quot; value=&quot;0&quot; aria-label=&quot;Value C&quot; autocomplete=&quot;off&quot;&gt;
+          &lt;/div&gt;
+          &lt;p class=&quot;hint&quot;&gt;A derivative determines f only up to a constant. This condition picks one member of the family f(x) + C.&lt;/p&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;btnrow&quot;&gt;&lt;button class=&quot;btn primary&quot; id=&quot;go&quot;&gt;Graph&lt;/button&gt;&lt;/div&gt;
+        &lt;div class=&quot;msg err&quot; id=&quot;err&quot; role=&quot;alert&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;msg warn&quot; id=&quot;warn&quot;&gt;&lt;/div&gt;
+      &lt;/section&gt;
+
+      &lt;section&gt;
+        &lt;h2&gt;Tangent line&lt;/h2&gt;
+        &lt;label class=&quot;check&quot;&gt;&lt;input type=&quot;checkbox&quot; id=&quot;showTan&quot; checked&gt; Show the tangent line&lt;/label&gt;
+        &lt;label class=&quot;check&quot;&gt;&lt;input type=&quot;checkbox&quot; id=&quot;trace&quot;&gt; Draw f′ only up to the tangent point&lt;/label&gt;
+        &lt;label class=&quot;check&quot;&gt;&lt;input type=&quot;checkbox&quot; id=&quot;loop&quot;&gt; Repeat the animation&lt;/label&gt;
+        &lt;input type=&quot;range&quot; id=&quot;pos&quot; min=&quot;0&quot; max=&quot;1000&quot; step=&quot;1&quot; value=&quot;300&quot; aria-label=&quot;Point of tangency&quot;&gt;
+        &lt;div class=&quot;btnrow&quot; style=&quot;align-items:center&quot;&gt;
+          &lt;button class=&quot;btn&quot; id=&quot;play&quot; aria-pressed=&quot;false&quot;&gt;Play&lt;/button&gt;
+          &lt;button class=&quot;btn&quot; id=&quot;reset&quot;&gt;Start at a&lt;/button&gt;
+          &lt;span class=&quot;speed&quot;&gt;&lt;label for=&quot;speed&quot;&gt;Speed&lt;/label&gt;
+            &lt;select id=&quot;speed&quot;&gt;&lt;option value=&quot;0.5&quot;&gt;0.5×&lt;/option&gt;&lt;option value=&quot;1&quot; selected&gt;1×&lt;/option&gt;&lt;option value=&quot;2&quot;&gt;2×&lt;/option&gt;&lt;option value=&quot;4&quot;&gt;4×&lt;/option&gt;&lt;/select&gt;
+          &lt;/span&gt;
+        &lt;/div&gt;
+        &lt;dl class=&quot;readout&quot; id=&quot;readout&quot;&gt;
+          &lt;dt&gt;c&lt;/dt&gt;&lt;dd id=&quot;rc&quot;&gt;–&lt;/dd&gt;
+          &lt;dt&gt;f(c)&lt;/dt&gt;&lt;dd id=&quot;ry&quot;&gt;–&lt;/dd&gt;
+          &lt;dt&gt;f′(c), slope&lt;/dt&gt;&lt;dd id=&quot;rm&quot;&gt;–&lt;/dd&gt;
+          &lt;dt&gt;Tangent line&lt;/dt&gt;&lt;dd id=&quot;req&quot;&gt;–&lt;/dd&gt;
+        &lt;/dl&gt;
+        &lt;div class=&quot;behavior&quot; id=&quot;rbeh&quot;&gt;&lt;/div&gt;
+        &lt;p class=&quot;hint&quot;&gt;You can also click or drag on either graph to move the point of tangency.&lt;/p&gt;
+      &lt;/section&gt;
+
+      &lt;section&gt;
+        &lt;details&gt;
+          &lt;summary&gt;How to type expressions&lt;/summary&gt;
+          &lt;ul&gt;
+            &lt;li&gt;Use &lt;code&gt;x&lt;/code&gt; as the variable. Implied multiplication works: &lt;code&gt;3x^2&lt;/code&gt;, &lt;code&gt;2sin(x)&lt;/code&gt;.&lt;/li&gt;
+            &lt;li&gt;Powers &lt;code&gt;x^(1/2)&lt;/code&gt;, roots &lt;code&gt;sqrt(x)&lt;/code&gt;. For a real cube root of negative numbers use &lt;code&gt;cbrt(x)&lt;/code&gt;.&lt;/li&gt;
+            &lt;li&gt;&lt;code&gt;e^x&lt;/code&gt; or &lt;code&gt;exp(x)&lt;/code&gt;; natural log &lt;code&gt;ln(x)&lt;/code&gt;; base 10 &lt;code&gt;log(x)&lt;/code&gt; or &lt;code&gt;log10(x)&lt;/code&gt;.&lt;/li&gt;
+            &lt;li&gt;Trig: &lt;code&gt;sin cos tan sec csc cot&lt;/code&gt;; inverses &lt;code&gt;arcsin arccos arctan&lt;/code&gt;.&lt;/li&gt;
+            &lt;li&gt;Absolute value &lt;code&gt;abs(x)&lt;/code&gt;. Constants &lt;code&gt;pi&lt;/code&gt; and &lt;code&gt;e&lt;/code&gt;.&lt;/li&gt;
+          &lt;/ul&gt;
+        &lt;/details&gt;
+      &lt;/section&gt;
+    &lt;/aside&gt;
+
+    &lt;div class=&quot;plots&quot;&gt;
+      &lt;figure&gt;
+        &lt;figcaption&gt;
+          &lt;span class=&quot;sw&quot; style=&quot;border-color:var(--f)&quot;&gt;&lt;/span&gt;
+          &lt;span class=&quot;cap-title&quot; id=&quot;titleF&quot;&gt;f(x)&lt;/span&gt;
+          &lt;span class=&quot;cap-sub&quot; id=&quot;subF&quot;&gt;&lt;/span&gt;
+        &lt;/figcaption&gt;
+        &lt;div class=&quot;canvas-box&quot;&gt;&lt;canvas id=&quot;cvF&quot; aria-label=&quot;Graph of f with tangent line&quot;&gt;&lt;/canvas&gt;&lt;/div&gt;
+      &lt;/figure&gt;
+      &lt;figure&gt;
+        &lt;figcaption&gt;
+          &lt;span class=&quot;sw&quot; style=&quot;border-color:var(--fp)&quot;&gt;&lt;/span&gt;
+          &lt;span class=&quot;cap-title&quot; id=&quot;titleD&quot;&gt;f′(x)&lt;/span&gt;
+          &lt;span class=&quot;cap-sub&quot; id=&quot;subD&quot;&gt;&lt;/span&gt;
+        &lt;/figcaption&gt;
+        &lt;div class=&quot;canvas-box&quot;&gt;&lt;canvas id=&quot;cvD&quot; aria-label=&quot;Graph of the derivative&quot;&gt;&lt;/canvas&gt;&lt;/div&gt;
+      &lt;/figure&gt;
+      &lt;footer id=&quot;note&quot;&gt;&lt;/footer&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+(function(){
+&#x27;use strict&#x27;;
+const $ = id =&gt; document.getElementById(id);
+
+if (typeof window.math === &#x27;undefined&#x27;) {
+  $(&#x27;err&#x27;).textContent = &#x27;The math library did not load. Check your connection and reload the page.&#x27;;
+  $(&#x27;err&#x27;).classList.add(&#x27;show&#x27;);
+  return;
+}
+const math = window.math.create(window.math.all);
+math.config({ predictable: true });
+if (!math.config().predictable) console.warn(&#x27;math.js predictable mode could not be enabled&#x27;);
+
+const PRESETS = {
+  f: [
+    { e: &#x27;x^3 - 3x&#x27;, a: &#x27;-2.5&#x27;, b: &#x27;2.5&#x27; },
+    { e: &#x27;sin(x)&#x27;, a: &#x27;-2pi&#x27;, b: &#x27;2pi&#x27; },
+    { e: &#x27;x*e^(-x^2)&#x27;, a: &#x27;-3&#x27;, b: &#x27;3&#x27; },
+    { e: &#x27;ln(x)&#x27;, a: &#x27;0.1&#x27;, b: &#x27;6&#x27; },
+    { e: &#x27;x^4 - 4x^2&#x27;, a: &#x27;-2.4&#x27;, b: &#x27;2.4&#x27; },
+    { e: &#x27;abs(x^2 - 1)&#x27;, a: &#x27;-2&#x27;, b: &#x27;2&#x27; }
+  ],
+  d: [
+    { e: &#x27;2x&#x27;, a: &#x27;-3&#x27;, b: &#x27;3&#x27;, x0: &#x27;0&#x27;, c: &#x27;0&#x27; },
+    { e: &#x27;3x^2 - 3&#x27;, a: &#x27;-2.5&#x27;, b: &#x27;2.5&#x27;, x0: &#x27;0&#x27;, c: &#x27;0&#x27; },
+    { e: &#x27;cos(x)&#x27;, a: &#x27;-2pi&#x27;, b: &#x27;2pi&#x27;, x0: &#x27;0&#x27;, c: &#x27;0&#x27; },
+    { e: &#x27;1/(1 + x^2)&#x27;, a: &#x27;-5&#x27;, b: &#x27;5&#x27;, x0: &#x27;0&#x27;, c: &#x27;0&#x27; },
+    { e: &#x27;e^(-x^2)&#x27;, a: &#x27;-3&#x27;, b: &#x27;3&#x27;, x0: &#x27;0&#x27;, c: &#x27;0&#x27; },
+    { e: &#x27;1/x&#x27;, a: &#x27;0.2&#x27;, b: &#x27;5&#x27;, x0: &#x27;1&#x27;, c: &#x27;0&#x27; }
+  ]
+};
+
+const S = {
+  mode: &#x27;f&#x27;, ready: false, xs: [], F: [], D: [], a: 0, b: 1,
+  yF: [-1, 1], yD: [-1, 1], valF: null, valD: null, x0: 0,
+  show: true, playing: false, lastT: 0, raf: 0
+};
+const PAD = { L: 54, R: 12, T: 10, B: 26 };
+
+/* ---------- parsing ---------- */
+function prep(s) {
+  return String(s)
+    .replace(/[\u2212\u2013]/g, &#x27;-&#x27;)
+    .replace(/[\u00b7\u00d7]/g, &#x27;*&#x27;)
+    .replace(/\u03c0/g, &#x27;pi&#x27;)
+    .replace(/\blog\s*\(/g, &#x27;log10(&#x27;)
+    .replace(/\bln\s*\(/g, &#x27;log(&#x27;)
+    .replace(/\barc(sin|cos|tan|sec|csc|cot)\b/g, &#x27;a$1&#x27;)
+    .trim();
+}
+function parseExpr(str) {
+  const s = prep(str);
+  if (!s) throw new Error(&#x27;Enter an expression in x.&#x27;);
+  let node;
+  try { node = math.parse(s); }
+  catch (e) { throw new Error(&#x27;The expression could not be read. Check parentheses and operators.&#x27;); }
+  node.traverse((n, path, parent) =&gt; {
+    if (!n.isSymbolNode) return;
+    if (parent &amp;&amp; parent.isFunctionNode &amp;&amp; path === &#x27;fn&#x27;) {
+      if (typeof math[n.name] !== &#x27;function&#x27;) throw new Error(&#x27;Unknown function &quot;&#x27; + n.name + &#x27;&quot;.&#x27;);
+      return;
+    }
+    if (n.name !== &#x27;x&#x27; &amp;&amp; typeof math[n.name] !== &#x27;number&#x27;) {
+      if (typeof math[n.name] === &#x27;function&#x27;) throw new Error(&#x27;Write &#x27; + n.name + &#x27;(x) with parentheses. For a power, use &#x27; + n.name + &#x27;(x)^2, not &#x27; + n.name + &#x27;^2(x).&#x27;);
+      throw new Error(&#x27;Unknown symbol &quot;&#x27; + n.name + &#x27;&quot;. Use x as the variable, and write products such as x*e^x or x*sin(x) with an explicit * when the letters run together.&#x27;);
+    }
+  });
+  return node;
+}
+function makeFn(node) {
+  const code = node.compile();
+  return x =&gt; {
+    try {
+      const v = code.evaluate({ x });
+      if (typeof v === &#x27;number&#x27;) return Number.isFinite(v) ? v : NaN;
+      if (v &amp;&amp; typeof v.re === &#x27;number&#x27; &amp;&amp; typeof v.im === &#x27;number&#x27;) {
+        return Math.abs(v.im) &lt; 1e-12 &amp;&amp; Number.isFinite(v.re) ? v.re : NaN;
+      }
+      return NaN;
+    } catch (e) { return NaN; }
+  };
+}
+function guardedNumD(f) {
+  return x =&gt; {
+    const h = 1e-4 * Math.max(1, Math.abs(x)), k = h / 10;
+    const f0 = f(x), fp = f(x + h), fm = f(x - h), fp2 = f(x + k), fm2 = f(x - k);
+    if (![f0, fp, fm, fp2, fm2].every(Number.isFinite)) return NaN;
+    const c1 = (fp - fm) / (2 * h), c2 = (fp2 - fm2) / (2 * k);
+    const fw = (fp2 - f0) / k, bw = (f0 - fm2) / k;
+    if (Math.abs(c1 - c2) &gt; 1e-2 * Math.max(1, Math.abs(c2))) return NaN;
+    if (Math.abs(fw - bw) &gt; 2e-2 * Math.max(1, Math.abs(c2))) return NaN;
+    return c2;
+  };
+}
+function withFallback(sym, f) {
+  const num = guardedNumD(f);
+  return x =&gt; { const v = sym(x); return Number.isFinite(v) ? v : num(x); };
+}
+function derivDisplay(dn) {
+  let sn; try { sn = math.simplify(dn); } catch (e) { sn = dn; }
+  let s = showExpr(sn);
+  if (/\d\.\d{6,}/.test(s)) {
+    try { s = showExpr(dn.__raw || dn).replace(/\u00b71(?![\d.])/g, &#x27;&#x27;).replace(/(^|[^\d.])1\u00b7/g, &#x27;$1&#x27;); } catch (e) {}
+    s = s.replace(/(\d+\.\d{6,})/g, m =&gt; String(+(+m).toPrecision(6)));
+  }
+  return s;
+}
+function showExpr(node) {
+  let s;
+  try { s = node.toString({ implicit: &#x27;hide&#x27;, parenthesis: &#x27;auto&#x27; }); }
+  catch (e) { s = String(node); }
+  return s.replace(/\blog\(/g, &#x27;ln(&#x27;)
+          .replace(/\s\*\s/g, &#x27;\u00b7&#x27;)
+          .replace(/\s\^\s/g, &#x27;^&#x27;)
+          .replace(/-/g, &#x27;\u2212&#x27;);
+}
+function numParse(str, name) {
+  let v;
+  try { v = math.evaluate(prep(str)); }
+  catch (e) { throw new Error(name + &#x27; must be a number (pi is allowed).&#x27;); }
+  if (typeof v !== &#x27;number&#x27; || !Number.isFinite(v)) throw new Error(name + &#x27; must be a finite real number.&#x27;);
+  return v;
+}
+
+/* ---------- numerics ---------- */
+function buildAnti(fp, a, b, x0, C, N) {
+  const L = b - a;
+  let nL = Math.round(N * (x0 - a) / L), nR = N - nL;
+  if (x0 &gt; a &amp;&amp; nL &lt; 1) nL = 1;
+  if (x0 &lt; b &amp;&amp; nR &lt; 1) nR = 1;
+  if (x0 === a) nL = 0;
+  if (x0 === b) nR = 0;
+  const xs = [];
+  for (let i = nL; i &gt;= 1; i--) xs.push(x0 - (x0 - a) * i / nL);
+  const k = xs.length;
+  xs.push(x0);
+  for (let i = 1; i &lt;= nR; i++) xs.push(x0 + (b - x0) * i / nR);
+  const F = new Array(xs.length).fill(NaN);
+  F[k] = C;
+  let broken = false;
+  const simpN = (u, v, n) =&gt; { const h = (v - u) / n; let s = fp(u) + fp(v); for (let i = 1; i &lt; n; i++) s += (i % 2 ? 4 : 2) * fp(u + i * h); return s * h / 3; };
+  const simpson = (u, v) =&gt; {
+    const m = (u + v) / 2, q1 = (u + m) / 2, q3 = (m + v) / 2;
+    const fu = fp(u), fm = fp(m), fv = fp(v), f1 = fp(q1), f3 = fp(q3);
+    const whole = (v - u) / 6 * (fu + 4 * fm + fv);
+    const halves = (v - u) / 12 * (fu + 4 * f1 + 2 * fm + 4 * f3 + fv);
+    if (!Number.isFinite(whole) || !Number.isFinite(halves)) return NaN;
+    if (Math.abs(whole - halves) &gt; 0.02 * Math.abs(halves) + 1e-12 * (v - u)) {
+      // refine: an integrable but steep integrand converges; a singularity inside the step does not
+      const s16 = simpN(u, v, 16), s32 = simpN(u, v, 32);
+      if (!Number.isFinite(s16) || !Number.isFinite(s32) || Math.abs(s16 - s32) &gt; 0.01 * Math.abs(s32) + 1e-12 * (v - u)) return NaN;
+      return s32;
+    }
+    return halves;
+  };
+  for (let i = k + 1; i &lt; xs.length; i++) {
+    const s = simpson(xs[i - 1], xs[i]);
+    if (!Number.isFinite(s) || !Number.isFinite(F[i - 1])) { broken = true; F[i] = NaN; }
+    else F[i] = F[i - 1] + s;
+  }
+  for (let i = k - 1; i &gt;= 0; i--) {
+    const s = simpson(xs[i], xs[i + 1]);
+    if (!Number.isFinite(s) || !Number.isFinite(F[i + 1])) { broken = true; F[i] = NaN; }
+    else F[i] = F[i + 1] - s;
+  }
+  return { xs, F, broken };
+}
+function interp(xs, ys, x) {
+  const n = xs.length;
+  if (x &lt;= xs[0]) return ys[0];
+  if (x &gt;= xs[n - 1]) return ys[n - 1];
+  let lo = 0, hi = n - 1;
+  while (hi - lo &gt; 1) { const m = (lo + hi) &gt;&gt; 1; if (xs[m] &lt;= x) lo = m; else hi = m; }
+  const t = (x - xs[lo]) / (xs[hi] - xs[lo]);
+  return ys[lo] + (ys[hi] - ys[lo]) * t;
+}
+function yRange(vals) {
+  const v = vals.filter(Number.isFinite).sort((p, q) =&gt; p - q);
+  if (!v.length) return [-1, 1];
+  const q = p =&gt; v[Math.min(v.length - 1, Math.max(0, Math.floor(p * (v.length - 1))))];
+  let mn = v[0], mx = v[v.length - 1];
+  const lo = q(0.05), hi = q(0.95), core = Math.max(hi - lo, 1e-12);
+  if ((mx - mn) &gt; 4 * core) { mn = Math.max(mn, lo - 0.5 * core); mx = Math.min(mx, hi + 0.5 * core); }
+  const tiny = Math.max(1e-9, Math.abs(mx) * 1e-9);
+  if (mx - mn &lt; tiny) { mn -= 1; mx += 1; }
+  const pad = (mx - mn) * 0.08;
+  return [mn - pad, mx + pad];
+}
+function niceStep(span, target) {
+  const raw = span / target;
+  const p = Math.pow(10, Math.floor(Math.log10(raw)));
+  const r = raw / p;
+  return (r &lt; 1.5 ? 1 : r &lt; 3 ? 2 : r &lt; 7 ? 5 : 10) * p;
+}
+function tickLabel(v, step) {
+  if (Math.abs(v) &lt; step * 1e-8) return &#x27;0&#x27;;
+  const dec = Math.max(0, -Math.floor(Math.log10(step) + 1e-9));
+  let s = v.toFixed(Math.min(dec, 8));
+  if (Math.abs(v) &gt;= 1e5 || (Math.abs(v) &lt; 1e-4)) s = (+v.toPrecision(3)).toExponential();
+  return s.replace(&#x27;-&#x27;, &#x27;\u2212&#x27;);
+}
+function fmtN(v) {
+  if (!Number.isFinite(v)) return &#x27;undefined&#x27;;
+  if (Math.abs(v) &lt; 1e-10) return &#x27;0&#x27;;
+  return String(+v.toPrecision(5));
+}
+function pretty(s) { return s.replace(/-/g, &#x27;\u2212&#x27;); }
+
+/* ---------- drawing ---------- */
+function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+function drawPanel(cv, o) {
+  const dpr = window.devicePixelRatio || 1;
+  const W = cv.clientWidth, H = cv.clientHeight;
+  if (!W || !H) return;
+  const tw = Math.round(W * dpr), th = Math.round(H * dpr);
+  if (cv.width !== tw || cv.height !== th) { cv.width = tw; cv.height = th; }
+  const ctx = cv.getContext(&#x27;2d&#x27;);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+
+  const { L, R, T, B } = PAD;
+  const pw = W - L - R, ph = H - T - B;
+  const a = S.a, b = S.b, y0 = o.yr[0], y1 = o.yr[1];
+  const X = x =&gt; L + (x - a) / (b - a) * pw;
+  const Y = y =&gt; T + (y1 - y) / (y1 - y0) * ph;
+  const c = {
+    grid: cssVar(&#x27;--grid&#x27;), axis: cssVar(&#x27;--axis&#x27;), muted: cssVar(&#x27;--muted&#x27;),
+    rule: cssVar(&#x27;--rule&#x27;), tan: cssVar(&#x27;--tan&#x27;), paper: cssVar(&#x27;--paper&#x27;), curve: cssVar(o.color)
+  };
+
+  ctx.font = &#x27;12px &quot;Atkinson Hyperlegible&quot;, system-ui, sans-serif&#x27;;
+  ctx.lineWidth = 1;
+
+  const sx = niceStep(b - a, Math.max(3, Math.floor(pw / 85)));
+  ctx.strokeStyle = c.grid; ctx.fillStyle = c.muted;
+  ctx.textAlign = &#x27;center&#x27;; ctx.textBaseline = &#x27;top&#x27;;
+  for (let k = Math.ceil(a / sx - 1e-9); k &lt;= Math.floor(b / sx + 1e-9); k++) {
+    const t = k * sx, px = Math.round(X(t)) + 0.5;
+    ctx.beginPath(); ctx.moveTo(px, T); ctx.lineTo(px, T + ph); ctx.stroke();
+    ctx.fillText(tickLabel(t, sx), px, T + ph + 6);
+  }
+  const sy = niceStep(y1 - y0, Math.max(3, Math.floor(ph / 48)));
+  ctx.textAlign = &#x27;right&#x27;; ctx.textBaseline = &#x27;middle&#x27;;
+  for (let k = Math.ceil(y0 / sy - 1e-9); k &lt;= Math.floor(y1 / sy + 1e-9); k++) {
+    const t = k * sy, py = Math.round(Y(t)) + 0.5;
+    ctx.beginPath(); ctx.moveTo(L, py); ctx.lineTo(L + pw, py); ctx.stroke();
+    ctx.fillText(tickLabel(t, sy), L - 7, py);
+  }
+  ctx.strokeStyle = c.axis; ctx.lineWidth = 1.3;
+  if (a &lt;= 0 &amp;&amp; b &gt;= 0) { const px = Math.round(X(0)) + 0.5; ctx.beginPath(); ctx.moveTo(px, T); ctx.lineTo(px, T + ph); ctx.stroke(); }
+  if (y0 &lt;= 0 &amp;&amp; y1 &gt;= 0) { const py = Math.round(Y(0)) + 0.5; ctx.beginPath(); ctx.moveTo(L, py); ctx.lineTo(L + pw, py); ctx.stroke(); }
+  ctx.strokeStyle = c.rule; ctx.lineWidth = 1;
+  ctx.strokeRect(L + 0.5, T + 0.5, pw - 1, ph - 1);
+
+  ctx.save();
+  ctx.beginPath(); ctx.rect(L, T, pw, ph); ctx.clip();
+
+  if (o.guide != null) {
+    ctx.save();
+    ctx.strokeStyle = c.muted; ctx.globalAlpha = 0.7; ctx.lineWidth = 1; ctx.setLineDash([3, 4]);
+    const px = X(o.guide);
+    ctx.beginPath(); ctx.moveTo(px, T); ctx.lineTo(px, T + ph); ctx.stroke();
+    ctx.restore();
+  }
+
+  const span = y1 - y0;
+  const strokeCurve = (upTo, alpha) =&gt; {
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = c.curve; ctx.lineWidth = 2.4;
+    ctx.lineJoin = &#x27;round&#x27;; ctx.lineCap = &#x27;round&#x27;; ctx.setLineDash([]);
+    ctx.beginPath();
+    let pen = false, prev = NaN;
+    for (let i = 0; i &lt; o.xs.length; i++) {
+      const x = o.xs[i];
+      if (upTo != null &amp;&amp; x &gt; upTo) break;
+      const y = o.ys[i];
+      if (!Number.isFinite(y)) { pen = false; continue; }
+      if (pen) {
+        const opposite = (prev &gt; y1 &amp;&amp; y &lt; y0) || (prev &lt; y0 &amp;&amp; y &gt; y1);
+        if (opposite || Math.abs(y - prev) &gt; 0.4 * span) pen = false;
+      }
+      const py = Math.max(T - 4 * ph, Math.min(T + 5 * ph, Y(y)));
+      if (!pen) { ctx.moveTo(X(x), py); pen = true; } else ctx.lineTo(X(x), py);
+      prev = y;
+    }
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  };
+  if (o.trace != null) { strokeCurve(null, 0.16); strokeCurve(o.trace, 1); }
+  else strokeCurve(null, 1);
+
+  if (o.tangent) {
+    const { cx, cy, m } = o.tangent;
+    ctx.save();
+    ctx.strokeStyle = c.tan; ctx.lineWidth = 1.7; ctx.setLineDash([8, 5]);
+    ctx.beginPath();
+    const ya = cy + m * (a - cx), yb = cy + m * (b - cx);
+    const clampY = v =&gt; Math.max(-1e6, Math.min(1e6, Y(v)));
+    ctx.moveTo(X(a), clampY(ya)); ctx.lineTo(X(b), clampY(yb));
+    ctx.stroke();
+    ctx.restore();
+  }
+  if (o.marker) {
+    ctx.beginPath();
+    ctx.arc(X(o.marker.x), Y(o.marker.y), 5.5, 0, Math.PI * 2);
+    ctx.fillStyle = c.curve; ctx.fill();
+    ctx.lineWidth = 2; ctx.strokeStyle = c.paper; ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function render() {
+  if (!S.ready) return;
+  const cx = S.x0, show = S.show;
+  const cy = show ? S.valF(cx) : NaN;
+  const m = show ? S.valD(cx) : NaN;
+  drawPanel($(&#x27;cvF&#x27;), {
+    xs: S.xs, ys: S.F, yr: S.yF, color: &#x27;--f&#x27;,
+    guide: show ? cx : null,
+    tangent: show &amp;&amp; Number.isFinite(cy) &amp;&amp; Number.isFinite(m) ? { cx, cy, m } : null,
+    marker: show &amp;&amp; Number.isFinite(cy) ? { x: cx, y: cy } : null
+  });
+  drawPanel($(&#x27;cvD&#x27;), {
+    xs: S.xs, ys: S.D, yr: S.yD, color: &#x27;--fp&#x27;,
+    guide: show ? cx : null,
+    trace: show &amp;&amp; $(&#x27;trace&#x27;).checked ? cx : null,
+    marker: show &amp;&amp; Number.isFinite(m) ? { x: cx, y: m } : null
+  });
+  updateReadout(cx, cy, m);
+}
+
+function lineEq(m, c, yc) {
+  const bInt = yc - m * c;
+  if (Math.abs(m) &lt; 1e-12) return pretty(&#x27;y = &#x27; + fmtN(yc));
+  const ms = fmtN(m);
+  let s = &#x27;y = &#x27; + (ms === &#x27;1&#x27; ? &#x27;&#x27; : ms === &#x27;-1&#x27; ? &#x27;-&#x27; : ms) + &#x27;x&#x27;;
+  if (Math.abs(bInt) &gt;= 1e-10) s += (bInt &lt; 0 ? &#x27; - &#x27; : &#x27; + &#x27;) + fmtN(Math.abs(bInt));
+  return pretty(s);
+}
+function updateReadout(c, yc, m) {
+  const box = $(&#x27;readout&#x27;);
+  if (!S.show) {
+    box.classList.add(&#x27;off&#x27;);
+    [&#x27;rc&#x27;, &#x27;ry&#x27;, &#x27;rm&#x27;, &#x27;req&#x27;].forEach(id =&gt; $(id).textContent = &#x27;–&#x27;);
+    $(&#x27;rbeh&#x27;).textContent = &#x27;&#x27;;
+    return;
+  }
+  box.classList.remove(&#x27;off&#x27;);
+  $(&#x27;rc&#x27;).textContent = pretty(fmtN(c));
+  $(&#x27;ry&#x27;).textContent = pretty(fmtN(yc));
+  $(&#x27;rm&#x27;).textContent = pretty(fmtN(m));
+  if (Number.isFinite(yc) &amp;&amp; Number.isFinite(m)) {
+    $(&#x27;req&#x27;).textContent = lineEq(m, c, yc);
+    const tol = 0.004 * (S.yD[1] - S.yD[0]);
+    $(&#x27;rbeh&#x27;).textContent = m &gt; tol ? &#x27;f′(c) &gt; 0, so f is increasing near c.&#x27;
+      : m &lt; -tol ? &#x27;f′(c) &lt; 0, so f is decreasing near c.&#x27;
+      : &#x27;f′(c) ≈ 0: the tangent line is horizontal here.&#x27;;
+  } else {
+    $(&#x27;req&#x27;).textContent = &#x27;not defined&#x27;;
+    $(&#x27;rbeh&#x27;).textContent = Number.isFinite(yc)
+      ? &#x27;f′ is not defined at this point, so there is no tangent line with a finite slope.&#x27;
+      : &#x27;f is not defined at this point.&#x27;;
+  }
+}
+
+/* ---------- build ---------- */
+function setMsg(id, text) { const el = $(id); el.textContent = text || &#x27;&#x27;; el.classList.toggle(&#x27;show&#x27;, !!text); }
+
+function build() {
+  setMsg(&#x27;err&#x27;, &#x27;&#x27;); setMsg(&#x27;warn&#x27;, &#x27;&#x27;);
+  pause();
+  try {
+    const node = parseExpr($(&#x27;expr&#x27;).value);
+    const a = numParse($(&#x27;a&#x27;).value, &#x27;The left endpoint a&#x27;);
+    const b = numParse($(&#x27;b&#x27;).value, &#x27;The right endpoint b&#x27;);
+    if (!(a &lt; b)) throw new Error(&#x27;The interval needs a &lt; b.&#x27;);
+    const g = makeFn(node);
+    const disp = showExpr(node);
+    const warns = [];
+    let xs, F, D, valF, valD, tF, tD, sF, sD, note;
+
+    if (S.mode === &#x27;f&#x27;) {
+      let d, dDisp;
+      try {
+        const dn = math.derivative(node, &#x27;x&#x27;);
+        try { dn.__raw = math.derivative(node, &#x27;x&#x27;, { simplify: false }); } catch (e) {}
+        d = withFallback(makeFn(dn), g);
+        dDisp = derivDisplay(dn);
+      } catch (e) {
+        d = guardedNumD(g); dDisp = null;
+      }
+      const N = 1200;
+      xs = new Array(N + 1); F = new Array(N + 1); D = new Array(N + 1);
+      for (let i = 0; i &lt;= N; i++) { const x = a + (b - a) * i / N; xs[i] = x; F[i] = g(x); D[i] = d(x); }
+      if (!F.some(Number.isFinite)) throw new Error(&#x27;f(x) has no real values on this interval.&#x27;);
+      if (F.some(v =&gt; !Number.isFinite(v))) warns.push(&#x27;f is undefined at some points of the interval; those parts are left blank.&#x27;);
+      valF = g; valD = d;
+      tF = &#x27;f(x) = &#x27; + disp;
+      sF = &#x27;&#x27;;
+      tD = dDisp ? &#x27;f′(x) = &#x27; + dDisp : &#x27;f′(x)&#x27;;
+      sD = dDisp ? &#x27;symbolic derivative&#x27; : &#x27;computed numerically&#x27;;
+      note = &#x27;The derivative was found symbolically when possible. Where f is not differentiable, such as a corner of abs(x), the graph of f′ jumps and the tangent readout reports it. For a careful breakpoint analysis use the Piecewise tab.&#x27;;
+    } else {
+      const x0 = $(&#x27;ax&#x27;).value.trim() === &#x27;&#x27; ? a : numParse($(&#x27;ax&#x27;).value, &#x27;The point x₀&#x27;);
+      const C = numParse($(&#x27;ac&#x27;).value, &#x27;The value C&#x27;);
+      if (x0 &lt; a || x0 &gt; b) throw new Error(&#x27;The point x₀ must lie in [a, b].&#x27;);
+      if (!Number.isFinite(g(x0))) throw new Error(&#x27;f′ is undefined at x₀. Choose a different x₀.&#x27;);
+      const r = buildAnti(g, a, b, x0, C, 2400);
+      xs = r.xs; F = r.F; D = xs.map(g);
+      if (r.broken) warns.push(&#x27;f′ is undefined somewhere in the interval. f is drawn only on the piece that contains x₀, because the integral cannot be carried across a point where f′ is undefined. Move x₀ to see another piece.&#x27;);
+      valF = x =&gt; interp(xs, F, x); valD = g;
+      tF = &#x27;f(x) = &#x27; + pretty(fmtN(C)) + &#x27; + ∫ f′(t) dt from &#x27; + pretty(fmtN(x0)) + &#x27; to x&#x27;;
+      sF = &#x27;one antiderivative, with f(&#x27; + pretty(fmtN(x0)) + &#x27;) = &#x27; + pretty(fmtN(C));
+      tD = &#x27;f′(x) = &#x27; + disp;
+      sD = &#x27;as entered&#x27;;
+      note = &#x27;f was reconstructed numerically with Simpson’s rule on 2,400 subintervals, so it is a graph, not a formula. Every other antiderivative is this graph shifted vertically; change C to see a different member of the family.&#x27;;
+    }
+
+    S.xs = xs; S.F = F; S.D = D; S.valF = valF; S.valD = valD;
+    S.a = a; S.b = b;
+    S.yF = yRange(F); S.yD = yRange(D);
+    S.x0 = a + 0.3 * (b - a);
+    S.ready = true;
+    $(&#x27;titleF&#x27;).textContent = tF; $(&#x27;subF&#x27;).textContent = sF;
+    $(&#x27;titleD&#x27;).textContent = tD; $(&#x27;subD&#x27;).textContent = sD;
+    $(&#x27;note&#x27;).textContent = note;
+    if (warns.length) setMsg(&#x27;warn&#x27;, warns.join(&#x27; &#x27;));
+    syncSlider();
+    render();
+  } catch (e) {
+    setMsg(&#x27;err&#x27;, e.message || String(e));
+  }
+}
+
+/* ---------- animation ---------- */
+function syncSlider() { $(&#x27;pos&#x27;).value = Math.round((S.x0 - S.a) / (S.b - S.a) * 1000); }
+function ensureShown() { if (!S.show) { S.show = true; $(&#x27;showTan&#x27;).checked = true; } }
+function play() {
+  if (!S.ready) return;
+  ensureShown();
+  if (S.x0 &gt;= S.b - 1e-12 * (S.b - S.a)) S.x0 = S.a;
+  S.playing = true; S.lastT = 0;
+  $(&#x27;play&#x27;).textContent = &#x27;Pause&#x27;; $(&#x27;play&#x27;).setAttribute(&#x27;aria-pressed&#x27;, &#x27;true&#x27;);
+  S.raf = requestAnimationFrame(tick);
+}
+function pause() {
+  S.playing = false; cancelAnimationFrame(S.raf);
+  $(&#x27;play&#x27;).textContent = &#x27;Play&#x27;; $(&#x27;play&#x27;).setAttribute(&#x27;aria-pressed&#x27;, &#x27;false&#x27;);
+}
+function tick(t) {
+  if (!S.playing) return;
+  if (!S.lastT) S.lastT = t;
+  const dt = Math.min(0.1, (t - S.lastT) / 1000);
+  S.lastT = t;
+  const dur = 12 / parseFloat($(&#x27;speed&#x27;).value);
+  S.x0 += (S.b - S.a) * dt / dur;
+  if (S.x0 &gt;= S.b) {
+    if ($(&#x27;loop&#x27;).checked) S.x0 = S.a;
+    else { S.x0 = S.b; syncSlider(); render(); pause(); return; }
+  }
+  syncSlider(); render();
+  S.raf = requestAnimationFrame(tick);
+}
+
+/* ---------- UI wiring ---------- */
+function renderChips() {
+  const box = $(&#x27;chips&#x27;); box.innerHTML = &#x27;&#x27;;
+  PRESETS[S.mode].forEach(p =&gt; {
+    const btn = document.createElement(&#x27;button&#x27;);
+    btn.className = &#x27;chip&#x27;; btn.type = &#x27;button&#x27;;
+    btn.textContent = pretty(p.e);
+    btn.addEventListener(&#x27;click&#x27;, () =&gt; {
+      $(&#x27;expr&#x27;).value = p.e; $(&#x27;a&#x27;).value = p.a; $(&#x27;b&#x27;).value = p.b;
+      if (S.mode === &#x27;d&#x27;) { $(&#x27;ax&#x27;).value = p.x0 || &#x27;&#x27;; $(&#x27;ac&#x27;).value = p.c || &#x27;0&#x27;; }
+      build();
+    });
+    box.appendChild(btn);
+  });
+}
+function setMode(m) {
+  S.mode = m;
+  $(&#x27;exprLabel&#x27;).textContent = m === &#x27;f&#x27; ? &#x27;f(x) =&#x27; : &#x27;f′(x) =&#x27;;
+  $(&#x27;icBox&#x27;).hidden = m !== &#x27;d&#x27;;
+  renderChips();
+  build();
+}
+document.querySelectorAll(&#x27;input[name=mode]&#x27;).forEach(r =&gt;
+  r.addEventListener(&#x27;change&#x27;, e =&gt; { if (e.target.checked) setMode(e.target.value); }));
+$(&#x27;go&#x27;).addEventListener(&#x27;click&#x27;, build);
+[&#x27;expr&#x27;, &#x27;a&#x27;, &#x27;b&#x27;, &#x27;ax&#x27;, &#x27;ac&#x27;].forEach(id =&gt;
+  $(id).addEventListener(&#x27;keydown&#x27;, e =&gt; { if (e.key === &#x27;Enter&#x27;) build(); }));
+$(&#x27;play&#x27;).addEventListener(&#x27;click&#x27;, () =&gt; S.playing ? pause() : play());
+$(&#x27;reset&#x27;).addEventListener(&#x27;click&#x27;, () =&gt; { if (!S.ready) return; pause(); ensureShown(); S.x0 = S.a; syncSlider(); render(); });
+$(&#x27;pos&#x27;).addEventListener(&#x27;input&#x27;, e =&gt; {
+  if (!S.ready) return;
+  pause(); ensureShown();
+  S.x0 = S.a + (S.b - S.a) * (+e.target.value) / 1000;
+  render();
+});
+$(&#x27;showTan&#x27;).addEventListener(&#x27;change&#x27;, e =&gt; { S.show = e.target.checked; if (!S.show) pause(); render(); });
+$(&#x27;trace&#x27;).addEventListener(&#x27;change&#x27;, render);
+
+function hookCanvas(cv) {
+  const setFrom = e =&gt; {
+    const r = cv.getBoundingClientRect();
+    const pw = r.width - PAD.L - PAD.R;
+    let t = (e.clientX - r.left - PAD.L) / pw;
+    t = Math.max(0, Math.min(1, t));
+    S.x0 = S.a + t * (S.b - S.a);
+    ensureShown(); syncSlider(); render();
+  };
+  cv.addEventListener(&#x27;pointerdown&#x27;, e =&gt; {
+    if (!S.ready) return;
+    pause();
+    try { cv.setPointerCapture(e.pointerId); } catch (_) {}
+    setFrom(e);
+  });
+  cv.addEventListener(&#x27;pointermove&#x27;, e =&gt; {
+    if (S.ready &amp;&amp; cv.hasPointerCapture &amp;&amp; cv.hasPointerCapture(e.pointerId)) setFrom(e);
+  });
+}
+hookCanvas($(&#x27;cvF&#x27;)); hookCanvas($(&#x27;cvD&#x27;));
+
+if (window.ResizeObserver) new ResizeObserver(() =&gt; render()).observe(document.querySelector(&#x27;.plots&#x27;));
+else window.addEventListener(&#x27;resize&#x27;, render);
+try { window.matchMedia(&#x27;(prefers-color-scheme: dark)&#x27;).addEventListener(&#x27;change&#x27;, render); } catch (_) {}
+new MutationObserver(render).observe(document.documentElement, { attributes: true, attributeFilter: [&#x27;data-theme&#x27;] });
+if (document.fonts &amp;&amp; document.fonts.ready) document.fonts.ready.then(render);
+
+renderChips();
+build();
+})();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+<iframe id="p2" role="tabpanel" aria-labelledby="t2" title="Piecewise function explorer" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, viewport-fit=cover&quot;&gt;
+&lt;title&gt;Piecewise Function Explorer&lt;/title&gt;
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot;&gt;
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.1/math.min.js&quot;&gt;&lt;/script&gt;
+&lt;style&gt;
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#fbfcfd; --paper:#ffffff; --ink:#16263d; --muted:#56657a; --rule:#d5dde7;
+  --grid:#e6edf5; --axis:#7d8ba0; --f:#1b3f78; --fp:#b3261e; --tan:#3c434d;
+  --accent:#1b3f78; --onaccent:#ffffff; --field:#f4f7fa;
+  --warn:#7a4b00; --warnbg:#fff3d9; --err:#8f1d17; --errbg:#fde8e6;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme=&quot;light&quot;]){
+    --bg:#10161f; --paper:#161e29; --ink:#e4e9f0; --muted:#9aa7b8; --rule:#2c3747;
+    --grid:#1f2835; --axis:#627085; --f:#8db4f2; --fp:#f08a7e; --tan:#d4d9e0;
+    --accent:#8db4f2; --onaccent:#0e1520; --field:#1b2430;
+    --warn:#f3c56e; --warnbg:#2c2414; --err:#f4a39b; --errbg:#351a18;
+  }
+}
+:root[data-theme=&quot;dark&quot;]{
+  --bg:#10161f; --paper:#161e29; --ink:#e4e9f0; --muted:#9aa7b8; --rule:#2c3747;
+  --grid:#1f2835; --axis:#627085; --f:#8db4f2; --fp:#f08a7e; --tan:#d4d9e0;
+  --accent:#8db4f2; --onaccent:#0e1520; --field:#1b2430;
+  --warn:#f3c56e; --warnbg:#2c2414; --err:#f4a39b; --errbg:#351a18;
+}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:&quot;Atkinson Hyperlegible&quot;,system-ui,-apple-system,&quot;Segoe UI&quot;,Roboto,sans-serif;
+  font-size:16px;line-height:1.45;font-variant-numeric:tabular-nums}
+.wrap{max-width:1200px;margin:0 auto;padding:22px 18px 36px}
+header{border-bottom:2px solid var(--ink);padding-bottom:12px}
+h1{font-size:1.6rem;line-height:1.15;margin:0;font-weight:700;letter-spacing:-.01em}
+header p{margin:6px 0 0;color:var(--muted);max-width:70ch}
+.layout{display:grid;grid-template-columns:340px minmax(0,1fr);gap:26px;margin-top:18px}
+@media (max-width:880px){.layout{grid-template-columns:minmax(0,1fr)}}
+aside{display:flex;flex-direction:column}
+aside section{padding:14px 0;border-bottom:1px solid var(--rule)}
+aside section:first-child{padding-top:0}
+aside h2{font-size:1.02rem;margin:0 0 10px;font-weight:700}
+.seg{position:relative;display:grid;grid-template-columns:1fr 1fr;border:1.5px solid var(--ink);border-radius:6px;overflow:hidden}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{padding:9px 6px;text-align:center;cursor:pointer;font-size:.93rem;line-height:1.25}
+.seg label + input + label{border-left:1.5px solid var(--ink)}
+.seg input:checked + label{background:var(--ink);color:var(--paper);font-weight:700}
+.seg input:focus-visible + label{outline:3px solid var(--accent);outline-offset:-4px}
+.field{margin-top:12px}
+.field &gt; label{display:block;font-size:.9rem;font-weight:700;margin-bottom:4px}
+input[type=text]{width:100%;font:inherit;font-size:1rem;padding:8px 10px;border:1px solid var(--rule);
+  border-radius:5px;background:var(--field);color:var(--ink)}
+input[type=text]:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hint{font-size:.84rem;color:var(--muted);margin:6px 0 0}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font:inherit;font-size:.86rem;padding:3px 9px;border:1px solid var(--rule);border-radius:4px;
+  background:transparent;color:var(--ink);cursor:pointer}
+.chip:hover{border-color:var(--ink)}
+button{font:inherit}
+.btn{font-weight:700;padding:9px 14px;border-radius:5px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--onaccent)}
+.btn:focus-visible,.chip:focus-visible,select:focus-visible,input[type=range]:focus-visible,input[type=checkbox]:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.msg{display:none;margin-top:12px;padding:9px 11px;border-radius:5px;font-size:.9rem}
+.msg.show{display:block}
+.msg.err{background:var(--errbg);color:var(--err)}
+.msg.warn{background:var(--warnbg);color:var(--warn)}
+.check{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.93rem;cursor:pointer}
+.check input{width:17px;height:17px;accent-color:var(--accent)}
+input[type=range]{width:100%;accent-color:var(--accent);margin:10px 0 2px}
+select{font:inherit;font-size:.93rem;padding:7px 8px;border:1px solid var(--rule);border-radius:5px;background:var(--field);color:var(--ink)}
+.speed{display:flex;align-items:center;gap:8px;font-size:.93rem}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;color:var(--ink);font-weight:700}
+details code{font-family:inherit;background:var(--field);padding:0 4px;border-radius:3px;color:var(--ink)}
+details ul{margin:8px 0 0;padding-left:18px}
+.plots{display:flex;flex-direction:column;gap:18px;min-width:0}
+figure{margin:0;min-width:0}
+figcaption{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.sw{display:inline-block;width:22px;height:0;border-top:3px solid;transform:translateY(-4px)}
+.cap-title{font-weight:700;font-size:1.02rem;overflow-wrap:anywhere}
+.cap-sub{color:var(--muted);font-size:.88rem}
+.canvas-box{border:1px solid var(--rule);border-radius:6px;background:var(--paper);overflow:hidden}
+canvas{display:block;width:100%;height:300px;touch-action:pan-y;cursor:crosshair}
+@media (max-width:600px){canvas{height:230px}}
+.readout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;font-size:.95rem;margin-top:12px}
+.readout dt{color:var(--muted)}
+.readout dd{margin:0;overflow-wrap:anywhere}
+.readout.off{opacity:.45}
+.behavior{margin-top:8px;font-size:.93rem;min-height:1.4em}
+footer{margin-top:22px;color:var(--muted);font-size:.86rem;max-width:80ch}
+@media (prefers-reduced-motion: reduce){ .chip,.btn{transition:none} }
+.pieces{display:flex;flex-direction:column;gap:12px;margin-top:2px}
+.piece{border-left:3px solid var(--rule);padding-left:10px}
+.piece.bad{border-left-color:var(--err)}
+.piece .dom{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto minmax(0,1fr) auto auto;gap:5px;align-items:center;margin-top:5px;font-size:.9rem;color:var(--muted)}
+.piece .dom input[type=text]{padding:6px 7px;font-size:.93rem}
+.piece select{padding:5px 3px;font-size:1rem}
+.rm{border:none;background:transparent;color:var(--muted);font-size:1.25rem;cursor:pointer;padding:0 4px;line-height:1}
+.rm:hover{color:var(--err)}
+.rm:focus-visible{outline:3px solid var(--accent);outline-offset:1px}
+.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--paper)}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:640px}
+th,td{padding:7px 10px;text-align:left;border-bottom:1px solid var(--rule);white-space:nowrap}
+th{font-weight:700;background:var(--field)}
+tbody tr:last-child td{border-bottom:none}
+td.no{color:var(--err);font-weight:700}
+td.yes{font-weight:700}
+.bpsec h2{font-size:1.02rem;margin:0 0 6px}
+.bpsec p{margin:0 0 8px;color:var(--muted);font-size:.88rem;max-width:75ch}
+.view{font:inherit;font-size:.85rem;padding:2px 9px;border:1px solid var(--rule);border-radius:4px;background:transparent;color:var(--ink);cursor:pointer}
+.view:hover{border-color:var(--ink)}
+.view:focus-visible{outline:3px solid var(--accent);outline-offset:1px}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;wrap&quot;&gt;
+  &lt;header&gt;
+    &lt;h1&gt;Piecewise function explorer&lt;/h1&gt;
+    &lt;p&gt;Build a function or a derivative piece by piece, each with its own domain. At every breakpoint the app checks continuity and compares the one-sided derivatives.&lt;/p&gt;
+  &lt;/header&gt;
+
+  &lt;div class=&quot;layout&quot;&gt;
+    &lt;aside&gt;
+      &lt;section&gt;
+        &lt;h2&gt;What are you entering?&lt;/h2&gt;
+        &lt;div class=&quot;seg&quot; role=&quot;radiogroup&quot; aria-label=&quot;Type of expression&quot;&gt;
+          &lt;input type=&quot;radio&quot; name=&quot;mode&quot; id=&quot;modeF&quot; value=&quot;f&quot; checked&gt;
+          &lt;label for=&quot;modeF&quot;&gt;A function f(x)&lt;/label&gt;
+          &lt;input type=&quot;radio&quot; name=&quot;mode&quot; id=&quot;modeD&quot; value=&quot;d&quot;&gt;
+          &lt;label for=&quot;modeD&quot;&gt;A derivative f′(x)&lt;/label&gt;
+        &lt;/div&gt;
+        
+
+        &lt;div class=&quot;field&quot; id=&quot;oneBox&quot; hidden&gt;
+          &lt;label for=&quot;expr&quot; id=&quot;exprLabel&quot;&gt;f(x) =&lt;/label&gt;
+          &lt;input type=&quot;text&quot; id=&quot;expr&quot; value=&quot;x^3 - 3x&quot; autocomplete=&quot;off&quot; spellcheck=&quot;false&quot;&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;field&quot; id=&quot;pwBox&quot;&gt;
+          &lt;label id=&quot;pwLabel&quot;&gt;f(x) is defined by these pieces&lt;/label&gt;
+          &lt;div class=&quot;pieces&quot; id=&quot;pieces&quot;&gt;&lt;/div&gt;
+          &lt;div class=&quot;btnrow&quot;&gt;&lt;button class=&quot;btn&quot; type=&quot;button&quot; id=&quot;addPiece&quot;&gt;Add piece&lt;/button&gt;&lt;/div&gt;
+          &lt;p class=&quot;hint&quot;&gt;Each piece needs its own domain. Choose [ or ] to include an endpoint and ( or ) to exclude it. Use -inf and inf for unbounded ends. A piece such as [2, 2] defines a single point.&lt;/p&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;chips&quot; id=&quot;chips&quot; aria-label=&quot;Examples&quot;&gt;&lt;/div&gt;
+
+        &lt;div class=&quot;field&quot;&gt;
+          &lt;label&gt;Graphing interval [a, b]&lt;/label&gt;
+          &lt;div class=&quot;row&quot;&gt;
+            &lt;input type=&quot;text&quot; id=&quot;a&quot; value=&quot;-2.5&quot; aria-label=&quot;Left endpoint a&quot; autocomplete=&quot;off&quot;&gt;
+            &lt;input type=&quot;text&quot; id=&quot;b&quot; value=&quot;2.5&quot; aria-label=&quot;Right endpoint b&quot; autocomplete=&quot;off&quot;&gt;
+          &lt;/div&gt;
+          &lt;p class=&quot;hint&quot;&gt;Endpoints may use pi, for example -2pi or pi/2.&lt;/p&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;field&quot; id=&quot;icBox&quot; hidden&gt;
+          &lt;label&gt;Initial condition f(x₀) = C&lt;/label&gt;
+          &lt;div class=&quot;row&quot;&gt;
+            &lt;input type=&quot;text&quot; id=&quot;ax&quot; value=&quot;&quot; placeholder=&quot;x₀ (default a)&quot; aria-label=&quot;Anchor point x0&quot; autocomplete=&quot;off&quot;&gt;
+            &lt;input type=&quot;text&quot; id=&quot;ac&quot; value=&quot;0&quot; aria-label=&quot;Value C&quot; autocomplete=&quot;off&quot;&gt;
+          &lt;/div&gt;
+          &lt;p class=&quot;hint&quot;&gt;A derivative determines f only up to a constant. This condition picks one member of the family f(x) + C.&lt;/p&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;btnrow&quot;&gt;&lt;button class=&quot;btn primary&quot; id=&quot;go&quot;&gt;Graph&lt;/button&gt;&lt;/div&gt;
+        &lt;div class=&quot;msg err&quot; id=&quot;err&quot; role=&quot;alert&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;msg warn&quot; id=&quot;warn&quot;&gt;&lt;/div&gt;
+      &lt;/section&gt;
+
+      &lt;section&gt;
+        &lt;h2&gt;Tangent line&lt;/h2&gt;
+        &lt;label class=&quot;check&quot;&gt;&lt;input type=&quot;checkbox&quot; id=&quot;showTan&quot; checked&gt; Show the tangent line&lt;/label&gt;
+        &lt;label class=&quot;check&quot;&gt;&lt;input type=&quot;checkbox&quot; id=&quot;trace&quot;&gt; Draw f′ only up to the tangent point&lt;/label&gt;
+        &lt;label class=&quot;check&quot;&gt;&lt;input type=&quot;checkbox&quot; id=&quot;stopBp&quot; checked&gt; Pause at breakpoints&lt;/label&gt;
+        &lt;label class=&quot;check&quot;&gt;&lt;input type=&quot;checkbox&quot; id=&quot;loop&quot;&gt; Repeat the animation&lt;/label&gt;
+        &lt;input type=&quot;range&quot; id=&quot;pos&quot; min=&quot;0&quot; max=&quot;1000&quot; step=&quot;1&quot; value=&quot;300&quot; aria-label=&quot;Point of tangency&quot;&gt;
+        &lt;div class=&quot;btnrow&quot; style=&quot;align-items:center&quot;&gt;
+          &lt;button class=&quot;btn&quot; id=&quot;play&quot; aria-pressed=&quot;false&quot;&gt;Play&lt;/button&gt;
+          &lt;button class=&quot;btn&quot; id=&quot;reset&quot;&gt;Start at a&lt;/button&gt;
+          &lt;span class=&quot;speed&quot;&gt;&lt;label for=&quot;speed&quot;&gt;Speed&lt;/label&gt;
+            &lt;select id=&quot;speed&quot;&gt;&lt;option value=&quot;0.5&quot;&gt;0.5×&lt;/option&gt;&lt;option value=&quot;1&quot; selected&gt;1×&lt;/option&gt;&lt;option value=&quot;2&quot;&gt;2×&lt;/option&gt;&lt;option value=&quot;4&quot;&gt;4×&lt;/option&gt;&lt;/select&gt;
+          &lt;/span&gt;
+        &lt;/div&gt;
+        &lt;dl class=&quot;readout&quot; id=&quot;readout&quot;&gt;
+          &lt;dt&gt;c&lt;/dt&gt;&lt;dd id=&quot;rc&quot;&gt;–&lt;/dd&gt;
+          &lt;dt&gt;f(c)&lt;/dt&gt;&lt;dd id=&quot;ry&quot;&gt;–&lt;/dd&gt;
+          &lt;dt&gt;f′(c), slope&lt;/dt&gt;&lt;dd id=&quot;rm&quot;&gt;–&lt;/dd&gt;
+          &lt;dt&gt;Tangent line&lt;/dt&gt;&lt;dd id=&quot;req&quot;&gt;–&lt;/dd&gt;
+        &lt;/dl&gt;
+        &lt;div class=&quot;behavior&quot; id=&quot;rbeh&quot;&gt;&lt;/div&gt;
+        &lt;p class=&quot;hint&quot;&gt;Click or drag on either graph to move the point of tangency. Near a breakpoint the point snaps onto it.&lt;/p&gt;
+      &lt;/section&gt;
+
+      &lt;section&gt;
+        &lt;details&gt;
+          &lt;summary&gt;How to type expressions&lt;/summary&gt;
+          &lt;ul&gt;
+            &lt;li&gt;Use &lt;code&gt;x&lt;/code&gt; as the variable. Implied multiplication works: &lt;code&gt;3x^2&lt;/code&gt;, &lt;code&gt;2sin(x)&lt;/code&gt;.&lt;/li&gt;
+            &lt;li&gt;Powers &lt;code&gt;x^(1/2)&lt;/code&gt;, roots &lt;code&gt;sqrt(x)&lt;/code&gt;, real cube root &lt;code&gt;cbrt(x)&lt;/code&gt;.&lt;/li&gt;
+            &lt;li&gt;&lt;code&gt;e^x&lt;/code&gt; or &lt;code&gt;exp(x)&lt;/code&gt;; natural log &lt;code&gt;ln(x)&lt;/code&gt;; base 10 &lt;code&gt;log(x)&lt;/code&gt; or &lt;code&gt;log10(x)&lt;/code&gt;.&lt;/li&gt;
+            &lt;li&gt;Trig: &lt;code&gt;sin cos tan sec csc cot&lt;/code&gt;; inverses &lt;code&gt;arcsin arccos arctan&lt;/code&gt;.&lt;/li&gt;
+            &lt;li&gt;Absolute value &lt;code&gt;abs(x)&lt;/code&gt;. Constants &lt;code&gt;pi&lt;/code&gt; and &lt;code&gt;e&lt;/code&gt;.&lt;/li&gt;
+          &lt;/ul&gt;
+        &lt;/details&gt;
+      &lt;/section&gt;
+    &lt;/aside&gt;
+
+    &lt;div class=&quot;plots&quot;&gt;
+      &lt;figure&gt;
+        &lt;figcaption&gt;
+          &lt;span class=&quot;sw&quot; style=&quot;border-color:var(--f)&quot;&gt;&lt;/span&gt;
+          &lt;span class=&quot;cap-title&quot; id=&quot;titleF&quot;&gt;f(x)&lt;/span&gt;
+          &lt;span class=&quot;cap-sub&quot; id=&quot;subF&quot;&gt;&lt;/span&gt;
+        &lt;/figcaption&gt;
+        &lt;div class=&quot;canvas-box&quot;&gt;&lt;canvas id=&quot;cvF&quot; aria-label=&quot;Graph of f with tangent line&quot;&gt;&lt;/canvas&gt;&lt;/div&gt;
+      &lt;/figure&gt;
+      &lt;figure&gt;
+        &lt;figcaption&gt;
+          &lt;span class=&quot;sw&quot; style=&quot;border-color:var(--fp)&quot;&gt;&lt;/span&gt;
+          &lt;span class=&quot;cap-title&quot; id=&quot;titleD&quot;&gt;f′(x)&lt;/span&gt;
+          &lt;span class=&quot;cap-sub&quot; id=&quot;subD&quot;&gt;&lt;/span&gt;
+        &lt;/figcaption&gt;
+        &lt;div class=&quot;canvas-box&quot;&gt;&lt;canvas id=&quot;cvD&quot; aria-label=&quot;Graph of the derivative&quot;&gt;&lt;/canvas&gt;&lt;/div&gt;
+      &lt;/figure&gt;
+      &lt;section class=&quot;bpsec&quot; id=&quot;bpSec&quot; hidden&gt;
+        &lt;h2&gt;Breakpoints&lt;/h2&gt;
+        &lt;p id=&quot;bpNote&quot;&gt;&lt;/p&gt;
+        &lt;div class=&quot;tablewrap&quot;&gt;&lt;table&gt;&lt;thead id=&quot;bpHead&quot;&gt;&lt;/thead&gt;&lt;tbody id=&quot;bpBody&quot;&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+      &lt;/section&gt;
+      &lt;footer id=&quot;note&quot;&gt;&lt;/footer&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+(function(){
+&#x27;use strict&#x27;;
+const $ = id =&gt; document.getElementById(id);
+if (typeof window.math === &#x27;undefined&#x27;) {
+  $(&#x27;err&#x27;).textContent = &#x27;The math library did not load. Check your connection and reload the page.&#x27;;
+  $(&#x27;err&#x27;).classList.add(&#x27;show&#x27;);
+  return;
+}
+const math = window.math.create(window.math.all);
+math.config({ predictable: true });
+if (!math.config().predictable) console.warn(&#x27;math.js predictable mode could not be enabled&#x27;);
+
+/* ---------- examples ---------- */
+const P = (e, lb, lo, hi, rb) =&gt; ({ e, lb, lo, hi, rb });
+const PRESETS = {
+  f_one: [
+    { e: &#x27;x^3 - 3x&#x27;, a: &#x27;-2.5&#x27;, b: &#x27;2.5&#x27; },
+    { e: &#x27;sin(x)&#x27;, a: &#x27;-2pi&#x27;, b: &#x27;2pi&#x27; },
+    { e: &#x27;x*e^(-x^2)&#x27;, a: &#x27;-3&#x27;, b: &#x27;3&#x27; },
+    { e: &#x27;ln(x)&#x27;, a: &#x27;0.1&#x27;, b: &#x27;6&#x27; },
+    { e: &#x27;x^4 - 4x^2&#x27;, a: &#x27;-2.4&#x27;, b: &#x27;2.4&#x27; }
+  ],
+  d_one: [
+    { e: &#x27;2x&#x27;, a: &#x27;-3&#x27;, b: &#x27;3&#x27;, x0: &#x27;0&#x27;, c: &#x27;0&#x27; },
+    { e: &#x27;3x^2 - 3&#x27;, a: &#x27;-2.5&#x27;, b: &#x27;2.5&#x27;, x0: &#x27;0&#x27;, c: &#x27;0&#x27; },
+    { e: &#x27;cos(x)&#x27;, a: &#x27;-2pi&#x27;, b: &#x27;2pi&#x27;, x0: &#x27;0&#x27;, c: &#x27;0&#x27; },
+    { e: &#x27;1/(1 + x^2)&#x27;, a: &#x27;-5&#x27;, b: &#x27;5&#x27;, x0: &#x27;0&#x27;, c: &#x27;0&#x27; },
+    { e: &#x27;1/x&#x27;, a: &#x27;0.2&#x27;, b: &#x27;5&#x27;, x0: &#x27;1&#x27;, c: &#x27;0&#x27; }
+  ],
+  f_pw: [
+    { label: &#x27;Smooth join&#x27;, a: &#x27;-2&#x27;, b: &#x27;3&#x27;, pieces: [P(&#x27;x^2&#x27;, &#x27;(&#x27;, &#x27;-inf&#x27;, &#x27;1&#x27;, &#x27;]&#x27;), P(&#x27;2x - 1&#x27;, &#x27;(&#x27;, &#x27;1&#x27;, &#x27;inf&#x27;, &#x27;)&#x27;)] },
+    { label: &#x27;Corner&#x27;, a: &#x27;-1&#x27;, b: &#x27;3&#x27;, pieces: [P(&#x27;x^2&#x27;, &#x27;(&#x27;, &#x27;-inf&#x27;, &#x27;1&#x27;, &#x27;)&#x27;), P(&#x27;2 - x&#x27;, &#x27;[&#x27;, &#x27;1&#x27;, &#x27;inf&#x27;, &#x27;)&#x27;)] },
+    { label: &#x27;Jump&#x27;, a: &#x27;-2&#x27;, b: &#x27;2&#x27;, pieces: [P(&#x27;x + 1&#x27;, &#x27;(&#x27;, &#x27;-inf&#x27;, &#x27;0&#x27;, &#x27;)&#x27;), P(&#x27;x^2&#x27;, &#x27;[&#x27;, &#x27;0&#x27;, &#x27;inf&#x27;, &#x27;)&#x27;)] },
+    { label: &#x27;Removable point&#x27;, a: &#x27;0&#x27;, b: &#x27;4&#x27;, pieces: [P(&#x27;(x^2 - 4)/(x - 2)&#x27;, &#x27;(&#x27;, &#x27;-inf&#x27;, &#x27;2&#x27;, &#x27;)&#x27;), P(&#x27;1&#x27;, &#x27;[&#x27;, &#x27;2&#x27;, &#x27;2&#x27;, &#x27;]&#x27;), P(&#x27;(x^2 - 4)/(x - 2)&#x27;, &#x27;(&#x27;, &#x27;2&#x27;, &#x27;inf&#x27;, &#x27;)&#x27;)] },
+    { label: &#x27;Three pieces&#x27;, a: &#x27;-2&#x27;, b: &#x27;2&#x27;, pieces: [P(&#x27;0&#x27;, &#x27;(&#x27;, &#x27;-inf&#x27;, &#x27;-1&#x27;, &#x27;)&#x27;), P(&#x27;1 - x^2&#x27;, &#x27;[&#x27;, &#x27;-1&#x27;, &#x27;1&#x27;, &#x27;]&#x27;), P(&#x27;0&#x27;, &#x27;(&#x27;, &#x27;1&#x27;, &#x27;inf&#x27;, &#x27;)&#x27;)] }
+  ],
+  d_pw: [
+    { label: &#x27;Step, gives |x|&#x27;, a: &#x27;-2&#x27;, b: &#x27;2&#x27;, x0: &#x27;0&#x27;, c: &#x27;0&#x27;, pieces: [P(&#x27;-1&#x27;, &#x27;(&#x27;, &#x27;-inf&#x27;, &#x27;0&#x27;, &#x27;)&#x27;), P(&#x27;1&#x27;, &#x27;[&#x27;, &#x27;0&#x27;, &#x27;inf&#x27;, &#x27;)&#x27;)] },
+    { label: &#x27;Tent&#x27;, a: &#x27;0&#x27;, b: &#x27;4&#x27;, x0: &#x27;0&#x27;, c: &#x27;0&#x27;, pieces: [P(&#x27;1&#x27;, &#x27;[&#x27;, &#x27;0&#x27;, &#x27;2&#x27;, &#x27;)&#x27;), P(&#x27;-1&#x27;, &#x27;[&#x27;, &#x27;2&#x27;, &#x27;4&#x27;, &#x27;]&#x27;)] },
+    { label: &#x27;Continuous f′&#x27;, a: &#x27;-2&#x27;, b: &#x27;3&#x27;, x0: &#x27;0&#x27;, c: &#x27;0&#x27;, pieces: [P(&#x27;2x&#x27;, &#x27;(&#x27;, &#x27;-inf&#x27;, &#x27;1&#x27;, &#x27;)&#x27;), P(&#x27;2&#x27;, &#x27;[&#x27;, &#x27;1&#x27;, &#x27;inf&#x27;, &#x27;)&#x27;)] }
+  ]
+};
+
+const S = {
+  mode: &#x27;f&#x27;, form: &#x27;pw&#x27;, ready: false, a: 0, b: 1,
+  segF: [], dotsF: [], segD: [], dotsD: [], yF: [-1, 1], yD: [-1, 1],
+  pw: null, antiXs: null, antiF: null, bps: [], bpInfo: new Map(),
+  x0: 0, show: true, playing: false, lastT: 0, raf: 0, holdUntil: 0
+};
+const PAD = { L: 54, R: 12, T: 10, B: 26 };
+
+/* ---------- parsing ---------- */
+function prep(s) {
+  return String(s)
+    .replace(/[\u2212\u2013]/g, &#x27;-&#x27;)
+    .replace(/[\u00b7\u00d7]/g, &#x27;*&#x27;)
+    .replace(/\u03c0/g, &#x27;pi&#x27;)
+    .replace(/\blog\s*\(/g, &#x27;log10(&#x27;)
+    .replace(/\bln\s*\(/g, &#x27;log(&#x27;)
+    .replace(/\barc(sin|cos|tan|sec|csc|cot)\b/g, &#x27;a$1&#x27;)
+    .trim();
+}
+function parseExpr(str) {
+  const s = prep(str);
+  if (!s) throw new Error(&#x27;enter an expression in x.&#x27;);
+  let node;
+  try { node = math.parse(s); }
+  catch (e) { throw new Error(&#x27;the expression could not be read. Check parentheses and operators.&#x27;); }
+  node.traverse((n, path, parent) =&gt; {
+    if (!n.isSymbolNode) return;
+    if (parent &amp;&amp; parent.isFunctionNode &amp;&amp; path === &#x27;fn&#x27;) {
+      if (typeof math[n.name] !== &#x27;function&#x27;) throw new Error(&#x27;unknown function &quot;&#x27; + n.name + &#x27;&quot;.&#x27;);
+      return;
+    }
+    if (n.name !== &#x27;x&#x27; &amp;&amp; typeof math[n.name] !== &#x27;number&#x27;) {
+      if (typeof math[n.name] === &#x27;function&#x27;) throw new Error(&#x27;write &#x27; + n.name + &#x27;(x) with parentheses. For a power, use &#x27; + n.name + &#x27;(x)^2, not &#x27; + n.name + &#x27;^2(x).&#x27;);
+      throw new Error(&#x27;unknown symbol &quot;&#x27; + n.name + &#x27;&quot;. Use x as the variable, and write products such as x*e^x with an explicit * when the letters run together.&#x27;);
+    }
+  });
+  return node;
+}
+function makeFn(node) {
+  const code = node.compile();
+  return x =&gt; {
+    try {
+      const v = code.evaluate({ x });
+      if (typeof v === &#x27;number&#x27;) return Number.isFinite(v) ? v : NaN;
+      if (v &amp;&amp; typeof v.re === &#x27;number&#x27; &amp;&amp; typeof v.im === &#x27;number&#x27;) return Math.abs(v.im) &lt; 1e-12 &amp;&amp; Number.isFinite(v.re) ? v.re : NaN;
+      return NaN;
+    } catch (e) { return NaN; }
+  };
+}
+function guardedNumD(f) {
+  return x =&gt; {
+    const h = 1e-4 * Math.max(1, Math.abs(x)), k = h / 10;
+    const f0 = f(x), fp = f(x + h), fm = f(x - h), fp2 = f(x + k), fm2 = f(x - k);
+    if (![f0, fp, fm, fp2, fm2].every(Number.isFinite)) return NaN;
+    const c1 = (fp - fm) / (2 * h), c2 = (fp2 - fm2) / (2 * k);
+    const fw = (fp2 - f0) / k, bw = (f0 - fm2) / k;
+    if (Math.abs(c1 - c2) &gt; 1e-2 * Math.max(1, Math.abs(c2))) return NaN;
+    if (Math.abs(fw - bw) &gt; 2e-2 * Math.max(1, Math.abs(c2))) return NaN;
+    return c2;
+  };
+}
+function withFallback(sym, f) {
+  const num = guardedNumD(f);
+  return x =&gt; { const v = sym(x); return Number.isFinite(v) ? v : num(x); };
+}
+function derivDisplay(dn) {
+  let sn; try { sn = math.simplify(dn); } catch (e) { sn = dn; }
+  let s = showExpr(sn);
+  if (/\d\.\d{6,}/.test(s)) {
+    try { s = showExpr(dn.__raw || dn).replace(/\u00b71(?![\d.])/g, &#x27;&#x27;).replace(/(^|[^\d.])1\u00b7/g, &#x27;$1&#x27;); } catch (e) {}
+    s = s.replace(/(\d+\.\d{6,})/g, m =&gt; String(+(+m).toPrecision(6)));
+  }
+  return s;
+}
+function showExpr(node) {
+  let s;
+  try { s = node.toString({ implicit: &#x27;hide&#x27;, parenthesis: &#x27;auto&#x27; }); } catch (e) { s = String(node); }
+  return s.replace(/\blog\(/g, &#x27;ln(&#x27;).replace(/\s\*\s/g, &#x27;\u00b7&#x27;).replace(/\s\^\s/g, &#x27;^&#x27;).replace(/(\d) (?=[a-zA-Z(])/g, &#x27;$1&#x27;).replace(/-/g, &#x27;\u2212&#x27;);
+}
+function numParse(str, name) {
+  let v;
+  try { v = math.evaluate(prep(str)); } catch (e) { throw new Error(name + &#x27; must be a number (pi is allowed).&#x27;); }
+  if (typeof v !== &#x27;number&#x27; || !Number.isFinite(v)) throw new Error(name + &#x27; must be a finite real number.&#x27;);
+  return v;
+}
+function parseEnd(str, name) {
+  const s = prep(str).toLowerCase().replace(/\s+/g, &#x27;&#x27;);
+  if ([&#x27;inf&#x27;, &#x27;+inf&#x27;, &#x27;infinity&#x27;, &#x27;+infinity&#x27;, &#x27;\u221e&#x27;, &#x27;+\u221e&#x27;, &#x27;oo&#x27;].includes(s)) return Infinity;
+  if ([&#x27;-inf&#x27;, &#x27;-infinity&#x27;, &#x27;-\u221e&#x27;, &#x27;-oo&#x27;].includes(s)) return -Infinity;
+  if (s === &#x27;&#x27;) throw new Error(name + &#x27; is empty.&#x27;);
+  return numParse(str, name);
+}
+function compilePiece(exprStr, wantDeriv) {
+  const node = parseExpr(exprStr);
+  const p = { fn: makeFn(node), disp: showExpr(node), dfn: null, ddisp: null };
+  if (wantDeriv) {
+    try {
+      const dn = math.derivative(node, &#x27;x&#x27;);
+        try { dn.__raw = math.derivative(node, &#x27;x&#x27;, { simplify: false }); } catch (e) {}
+      p.dfn = withFallback(makeFn(dn), p.fn);
+      p.ddisp = derivDisplay(dn);
+    } catch (e) { p.dfn = guardedNumD(p.fn); p.ddisp = null; }
+  }
+  return p;
+}
+
+/* ---------- piecewise structure ---------- */
+function inPiece(p, x) {
+  return (x &gt; p.lo || (p.lc &amp;&amp; x === p.lo)) &amp;&amp; (x &lt; p.hi || (p.hc &amp;&amp; x === p.hi));
+}
+function intersects(I, J) {
+  let lo, lc, hi, hc;
+  if (I.lo &gt; J.lo) { lo = I.lo; lc = I.lc; } else if (J.lo &gt; I.lo) { lo = J.lo; lc = J.lc; } else { lo = I.lo; lc = I.lc &amp;&amp; J.lc; }
+  if (I.hi &lt; J.hi) { hi = I.hi; hc = I.hc; } else if (J.hi &lt; I.hi) { hi = J.hi; hc = J.hc; } else { hi = I.hi; hc = I.hc &amp;&amp; J.hc; }
+  if (lo &lt; hi) return true;
+  return lo === hi &amp;&amp; lc &amp;&amp; hc;
+}
+function makePW(pieces) {
+  return {
+    pieces,
+    find(x) { for (const p of pieces) if (inPiece(p, x)) return p; return null; },
+    eval(x) { const p = this.find(x); return p ? p.fn(x) : NaN; },
+    left(x) { for (const p of pieces) if (p.lo &lt; x &amp;&amp; x &lt;= p.hi) return p; return null; },
+    right(x) { for (const p of pieces) if (p.lo &lt;= x &amp;&amp; x &lt; p.hi) return p; return null; }
+  };
+}
+// one-sided limit of fn at p; returns a number, +-Infinity when the values grow without bound, or NaN
+function limSide(fn, p, dir) {
+  const v = fn(p); if (Number.isFinite(v)) return v;
+  const h = 1e-4 * Math.max(1, Math.abs(p));
+  const e1 = 2 * fn(p + dir * h / 2) - fn(p + dir * h);
+  const e2 = 2 * fn(p + dir * h / 200) - fn(p + dir * h / 100);
+  if (!Number.isFinite(e1) || !Number.isFinite(e2)) return NaN;
+  if (Math.abs(e2 - e1) &lt;= 1e-2 * Math.max(1, Math.abs(e1))) return e1;
+  if (Math.sign(e1) === Math.sign(e2) &amp;&amp; Math.abs(e2) &gt; 3 * Math.abs(e1)) return Math.sign(e2) * Infinity;
+  return NaN;
+}
+const limitL = (fn, p) =&gt; limSide(fn, p, -1);
+const limitR = (fn, p) =&gt; limSide(fn, p, 1);
+const isInf = v =&gt; v === Infinity || v === -Infinity;
+const close = (u, v, rel) =&gt; Number.isFinite(u) &amp;&amp; Number.isFinite(v) &amp;&amp; Math.abs(u - v) &lt;= rel * Math.max(1, Math.abs(u), Math.abs(v));
+
+function readPieceRows(wantDeriv) {
+  const rows = [...document.querySelectorAll(&#x27;#pieces .piece&#x27;)];
+  rows.forEach(r =&gt; r.classList.remove(&#x27;bad&#x27;));
+  const pieces = [];
+  rows.forEach((r, i) =&gt; {
+    const tag = &#x27;Piece &#x27; + (i + 1) + &#x27;: &#x27;;
+    try {
+      const q = r.querySelector.bind(r);
+      const exprStr = q(&#x27;.pe&#x27;).value;
+      const lo = parseEnd(q(&#x27;.plo&#x27;).value, &#x27;the left end of the domain&#x27;);
+      const hi = parseEnd(q(&#x27;.phi&#x27;).value, &#x27;the right end of the domain&#x27;);
+      let lc = q(&#x27;.lb&#x27;).value === &#x27;[&#x27;, hc = q(&#x27;.rb&#x27;).value === &#x27;]&#x27;;
+      if (lo === Infinity || hi === -Infinity) throw new Error(&#x27;the domain endpoints are in the wrong order.&#x27;);
+      if (lo === -Infinity) lc = false;
+      if (hi === Infinity) hc = false;
+      if (lo &gt; hi) throw new Error(&#x27;the left end of the domain must not exceed the right end.&#x27;);
+      if (lo === hi &amp;&amp; !(lc &amp;&amp; hc)) throw new Error(&#x27;a one-point domain must be written with brackets, as in [2, 2].&#x27;);
+      const cp = compilePiece(exprStr, wantDeriv);
+      Object.assign(cp, { lo, hi, lc, hc, loTxt: endTxt(q(&#x27;.plo&#x27;).value, lo), hiTxt: endTxt(q(&#x27;.phi&#x27;).value, hi), row: r, idx: i });
+      pieces.push(cp);
+    } catch (e) {
+      r.classList.add(&#x27;bad&#x27;);
+      throw new Error(tag + e.message);
+    }
+  });
+  if (!pieces.length) throw new Error(&#x27;Add at least one piece.&#x27;);
+  for (let i = 0; i &lt; pieces.length; i++) for (let j = i + 1; j &lt; pieces.length; j++) {
+    if (intersects(pieces[i], pieces[j])) {
+      pieces[i].row.classList.add(&#x27;bad&#x27;); pieces[j].row.classList.add(&#x27;bad&#x27;);
+      throw new Error(&#x27;Pieces &#x27; + (i + 1) + &#x27; and &#x27; + (j + 1) + &#x27; have overlapping domains. Each x may belong to only one piece; check whether a shared endpoint is included in both.&#x27;);
+    }
+  }
+  return pieces;
+}
+function endTxt(raw, v) {
+  if (v === Infinity) return &#x27;\u221e&#x27;;
+  if (v === -Infinity) return &#x27;\u2212\u221e&#x27;;
+  return prep(raw).replace(/\bpi\b/g, &#x27;\u03c0&#x27;).replace(/\s*\*\s*/g, &#x27;&#x27;).replace(/-/g, &#x27;\u2212&#x27;);
+}
+function cond(p, forceOpen) {
+  const lc = p.lc &amp;&amp; !forceOpen, hc = p.hc &amp;&amp; !forceOpen;
+  if (p.lo === p.hi) return &#x27;x = &#x27; + p.loTxt;
+  if (p.lo === -Infinity &amp;&amp; p.hi === Infinity) return &#x27;all x&#x27;;
+  if (p.lo === -Infinity) return &#x27;x &#x27; + (hc ? &#x27;\u2264&#x27; : &#x27;&lt;&#x27;) + &#x27; &#x27; + p.hiTxt;
+  if (p.hi === Infinity) return &#x27;x &#x27; + (lc ? &#x27;\u2265&#x27; : &#x27;&gt;&#x27;) + &#x27; &#x27; + p.loTxt;
+  return p.loTxt + &#x27; &#x27; + (lc ? &#x27;\u2264&#x27; : &#x27;&lt;&#x27;) + &#x27; x &#x27; + (hc ? &#x27;\u2264&#x27; : &#x27;&lt;&#x27;) + &#x27; &#x27; + p.hiTxt;
+}
+
+/* ---------- sampling ---------- */
+function sampleSeg(fn, lo, hi, n) {
+  const xs = new Array(n + 1), ys = new Array(n + 1);
+  for (let i = 0; i &lt;= n; i++) {
+    const x = lo + (hi - lo) * i / n;
+    let y = fn(x);
+    if (!Number.isFinite(y) &amp;&amp; i === 0) y = limitR(fn, x);
+    if (!Number.isFinite(y) &amp;&amp; i === n) y = limitL(fn, x);
+    xs[i] = x; ys[i] = y;
+  }
+  return { xs, ys };
+}
+// segments and endpoint dots for the graph of a piecewise expression (fnKey = &#x27;fn&#x27; or &#x27;dfn&#x27;)
+function pwGraph(pw, a, b, fnKey) {
+  const segs = [], open = [], closed = [];
+  for (const p of pw.pieces) {
+    const fn = p[fnKey];
+    const lo = Math.max(p.lo, a), hi = Math.min(p.hi, b);
+    if (lo &gt; hi) continue;
+    if (p.lo === p.hi) {
+      if (fnKey === &#x27;fn&#x27;) { const y = fn(p.lo); if (Number.isFinite(y)) closed.push({ x: p.lo, y }); }
+      continue;
+    }
+    if (lo === hi) continue;
+    const n = Math.max(40, Math.round(1400 * (hi - lo) / (b - a)));
+    segs.push(sampleSeg(fn, lo, hi, n));
+    const derivGraph = fnKey === &#x27;dfn&#x27;;
+    if (Number.isFinite(p.lo) &amp;&amp; p.lo &gt;= a &amp;&amp; p.lo &lt;= b) {
+      const y = limitR(fn, p.lo);
+      if (Number.isFinite(y)) ((p.lc &amp;&amp; !derivGraph) ? closed : open).push({ x: p.lo, y });
+    }
+    if (Number.isFinite(p.hi) &amp;&amp; p.hi &gt;= a &amp;&amp; p.hi &lt;= b) {
+      const y = limitL(fn, p.hi);
+      if (Number.isFinite(y)) ((p.hc &amp;&amp; !derivGraph) ? closed : open).push({ x: p.hi, y });
+    }
+  }
+  return { segs, open, closed };
+}
+function breakpointsOf(pw, a, b) {
+  const set = new Set();
+  for (const p of pw.pieces) {
+    if (Number.isFinite(p.lo) &amp;&amp; p.lo &gt;= a &amp;&amp; p.lo &lt;= b) set.add(p.lo);
+    if (Number.isFinite(p.hi) &amp;&amp; p.hi &gt;= a &amp;&amp; p.hi &lt;= b) set.add(p.hi);
+  }
+  return [...set].sort((u, v) =&gt; u - v);
+}
+function gapWarning(pw, a, b, bps) {
+  const pts = [a, ...bps.filter(p =&gt; p &gt; a &amp;&amp; p &lt; b), b];
+  for (let i = 0; i &lt; pts.length - 1; i++) {
+    const m = (pts[i] + pts[i + 1]) / 2;
+    if (pts[i + 1] &gt; pts[i] &amp;&amp; !pw.find(m)) return true;
+  }
+  return false;
+}
+
+/* ---------- breakpoint analysis ---------- */
+function analyzeF(pw, p) {
+  const fp = pw.eval(p);
+  const Lp = pw.left(p), Rp = pw.right(p);
+  const L = Lp ? limitL(Lp.fn, p) : null, R = Rp ? limitR(Rp.fn, p) : null;
+  const contL = Lp ? close(L, fp, 1e-6) : null, contR = Rp ? close(R, fp, 1e-6) : null;
+  const defined = Number.isFinite(fp);
+  const cont = defined &amp;&amp; contL !== false &amp;&amp; contR !== false;
+  const dL = Lp ? (contL ? limitL(Lp.dfn, p) : NaN) : null;
+  const dR = Rp ? (contR ? limitR(Rp.dfn, p) : NaN) : null;
+  const both = Lp &amp;&amp; Rp;
+  let kind, m = NaN;
+  if (!defined) kind = &#x27;undef&#x27;;
+  else if (!cont) kind = &#x27;jump&#x27;;
+  else if (both &amp;&amp; Number.isFinite(dL) &amp;&amp; Number.isFinite(dR) &amp;&amp; close(dL, dR, 1e-5)) { kind = &#x27;smooth&#x27;; m = (dL + dR) / 2; }
+  else if (both &amp;&amp; Number.isFinite(dL) &amp;&amp; Number.isFinite(dR)) kind = &#x27;corner&#x27;;
+  else if (both &amp;&amp; isInf(dL) &amp;&amp; isInf(dR)) kind = Math.sign(dL) === Math.sign(dR) ? &#x27;vertical&#x27; : &#x27;cusp&#x27;;
+  else kind = both ? &#x27;nod&#x27; : &#x27;edge&#x27;;
+  return { p, fp, L, R, hasL: !!Lp, hasR: !!Rp, contL, contR, cont, dL, dR, kind, m };
+}
+function analyzeD(g, p, y) {
+  const Lp = g.left(p), Rp = g.right(p);
+  const dL = Lp ? limitL(Lp.fn, p) : null, dR = Rp ? limitR(Rp.fn, p) : null;
+  let kind, m = NaN;
+  if (!Number.isFinite(y)) kind = &#x27;undef&#x27;;
+  else if (Lp &amp;&amp; Rp &amp;&amp; Number.isFinite(dL) &amp;&amp; Number.isFinite(dR) &amp;&amp; close(dL, dR, 1e-5)) { kind = &#x27;smooth&#x27;; m = (dL + dR) / 2; }
+  else if (Lp &amp;&amp; Rp &amp;&amp; Number.isFinite(dL) &amp;&amp; Number.isFinite(dR)) kind = &#x27;corner&#x27;;
+  else if (Lp &amp;&amp; Rp &amp;&amp; isInf(dL) &amp;&amp; isInf(dR)) kind = Math.sign(dL) === Math.sign(dR) ? &#x27;vertical&#x27; : &#x27;cusp&#x27;;
+  else kind = (Lp &amp;&amp; Rp) ? &#x27;nod&#x27; : &#x27;edge&#x27;;
+  return { p, fp: y, dL, dR, hasL: !!Lp, hasR: !!Rp, cont: Number.isFinite(y), kind, m };
+}
+
+/* ---------- antiderivative ---------- */
+function buildAnti(g, a, b, x0, C, bps, N) {
+  let xs = [];
+  for (let i = 0; i &lt;= N; i++) xs.push(a + (b - a) * i / N);
+  bps.forEach(p =&gt; { if (p &gt; a &amp;&amp; p &lt; b) xs.push(p); });
+  xs.push(x0);
+  xs.sort((u, v) =&gt; u - v);
+  const eps = 1e-12 * (b - a);
+  const keep = [xs[0]];
+  for (let i = 1; i &lt; xs.length; i++) {
+    const v = xs[i];
+    if (v - keep[keep.length - 1] &gt; eps) keep.push(v);
+    else if (v === x0 || bps.includes(v)) keep[keep.length - 1] = v;
+  }
+  xs = keep;
+  const k = xs.indexOf(x0);
+  const F = new Array(xs.length).fill(NaN);
+  F[k] = C;
+  let broken = false;
+  const piece = (u, v) =&gt; {
+    const mid = (u + v) / 2, p = g.find(mid);
+    if (!p) return NaN;
+    const fu = Number.isFinite(p.fn(u)) ? p.fn(u) : limitR(p.fn, u);
+    const fv = Number.isFinite(p.fn(v)) ? p.fn(v) : limitL(p.fn, v);
+    const fm = p.fn(mid), f1 = p.fn((u + mid) / 2), f3 = p.fn((mid + v) / 2);
+    const safe = x =&gt; { const y = p.fn(x); return Number.isFinite(y) ? y : (x &lt;= mid ? limitR(p.fn, x) : limitL(p.fn, x)); };
+    const simpN = (a1, b1, n) =&gt; { const h = (b1 - a1) / n; let t = safe(a1) + safe(b1); for (let i = 1; i &lt; n; i++) t += (i % 2 ? 4 : 2) * safe(a1 + i * h); return t * h / 3; };
+    const whole = (v - u) / 6 * (fu + 4 * fm + fv);
+    const halves = (v - u) / 12 * (fu + 4 * f1 + 2 * fm + 4 * f3 + fv);
+    if (!Number.isFinite(whole) || !Number.isFinite(halves)) return NaN;
+    if (Math.abs(whole - halves) &gt; 0.02 * Math.abs(halves) + 1e-12 * (v - u)) {
+      // refine: an integrable but steep integrand converges; a singularity inside the step does not
+      const s16 = simpN(u, v, 16), s32 = simpN(u, v, 32);
+      if (!Number.isFinite(s16) || !Number.isFinite(s32) || Math.abs(s16 - s32) &gt; 0.01 * Math.abs(s32) + 1e-12 * (v - u)) return NaN;
+      return s32;
+    }
+    return halves;
+  };
+  for (let i = k + 1; i &lt; xs.length; i++) {
+    const s = piece(xs[i - 1], xs[i]);
+    if (!Number.isFinite(s) || !Number.isFinite(F[i - 1])) { broken = true; F[i] = NaN; } else F[i] = F[i - 1] + s;
+  }
+  for (let i = k - 1; i &gt;= 0; i--) {
+    const s = piece(xs[i], xs[i + 1]);
+    if (!Number.isFinite(s) || !Number.isFinite(F[i + 1])) { broken = true; F[i] = NaN; } else F[i] = F[i + 1] - s;
+  }
+  return { xs, F, broken };
+}
+function interp(xs, ys, x) {
+  const n = xs.length;
+  if (x &lt;= xs[0]) return ys[0];
+  if (x &gt;= xs[n - 1]) return ys[n - 1];
+  let lo = 0, hi = n - 1;
+  while (hi - lo &gt; 1) { const m = (lo + hi) &gt;&gt; 1; if (xs[m] &lt;= x) lo = m; else hi = m; }
+  if (xs[lo] === x) return ys[lo];
+  const t = (x - xs[lo]) / (xs[hi] - xs[lo]);
+  return ys[lo] + (ys[hi] - ys[lo]) * t;
+}
+
+/* ---------- formatting ---------- */
+function yRange(vals) {
+  const v = vals.filter(Number.isFinite).sort((p, q) =&gt; p - q);
+  if (!v.length) return [-1, 1];
+  const q = p =&gt; v[Math.min(v.length - 1, Math.max(0, Math.floor(p * (v.length - 1))))];
+  let mn = v[0], mx = v[v.length - 1];
+  const lo = q(0.05), hi = q(0.95), core = Math.max(hi - lo, 1e-12);
+  if ((mx - mn) &gt; 4 * core) { mn = Math.max(mn, lo - 0.5 * core); mx = Math.min(mx, hi + 0.5 * core); }
+  const tiny = Math.max(1e-9, Math.abs(mx) * 1e-9);
+  if (mx - mn &lt; tiny) { mn -= 1; mx += 1; }
+  const pad = (mx - mn) * 0.08;
+  return [mn - pad, mx + pad];
+}
+function niceStep(span, target) {
+  const raw = span / target, p = Math.pow(10, Math.floor(Math.log10(raw))), r = raw / p;
+  return (r &lt; 1.5 ? 1 : r &lt; 3 ? 2 : r &lt; 7 ? 5 : 10) * p;
+}
+function tickLabel(v, step) {
+  if (Math.abs(v) &lt; step * 1e-8) return &#x27;0&#x27;;
+  const dec = Math.max(0, -Math.floor(Math.log10(step) + 1e-9));
+  let s = v.toFixed(Math.min(dec, 8));
+  if (Math.abs(v) &gt;= 1e5 || Math.abs(v) &lt; 1e-4) s = (+v.toPrecision(3)).toExponential();
+  return s.replace(&#x27;-&#x27;, &#x27;\u2212&#x27;);
+}
+function fmtN(v) {
+  if (v === null || v === undefined) return &#x27;—&#x27;;
+  if (v === Infinity) return &#x27;\u221e&#x27;;
+  if (v === -Infinity) return &#x27;\u2212\u221e&#x27;;
+  if (!Number.isFinite(v)) return &#x27;undefined&#x27;;
+  if (Math.abs(v) &lt; 1e-9) return &#x27;0&#x27;;
+  return String(+v.toPrecision(5)).replace(&#x27;-&#x27;, &#x27;\u2212&#x27;);
+}
+function lineEq(m, c, yc) {
+  const bInt = yc - m * c;
+  if (Math.abs(m) &lt; 1e-10) return &#x27;y = &#x27; + fmtN(yc);
+  const ms = fmtN(m);
+  let s = &#x27;y = &#x27; + (ms === &#x27;1&#x27; ? &#x27;&#x27; : ms === &#x27;\u22121&#x27; ? &#x27;\u2212&#x27; : ms) + &#x27;x&#x27;;
+  if (Math.abs(bInt) &gt;= 1e-9) s += (bInt &lt; 0 ? &#x27; \u2212 &#x27; : &#x27; + &#x27;) + fmtN(Math.abs(bInt));
+  return s;
+}
+
+/* ---------- drawing ---------- */
+function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+function drawPanel(cv, o) {
+  const dpr = window.devicePixelRatio || 1;
+  const W = cv.clientWidth, H = cv.clientHeight;
+  if (!W || !H) return;
+  const tw = Math.round(W * dpr), th = Math.round(H * dpr);
+  if (cv.width !== tw || cv.height !== th) { cv.width = tw; cv.height = th; }
+  const ctx = cv.getContext(&#x27;2d&#x27;);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  const { L, R, T, B } = PAD;
+  const pw = W - L - R, ph = H - T - B;
+  const a = S.a, b = S.b, y0 = o.yr[0], y1 = o.yr[1];
+  const X = x =&gt; L + (x - a) / (b - a) * pw;
+  const Y = y =&gt; T + (y1 - y) / (y1 - y0) * ph;
+  const c = { grid: cssVar(&#x27;--grid&#x27;), axis: cssVar(&#x27;--axis&#x27;), muted: cssVar(&#x27;--muted&#x27;), rule: cssVar(&#x27;--rule&#x27;),
+              tan: cssVar(&#x27;--tan&#x27;), paper: cssVar(&#x27;--paper&#x27;), curve: cssVar(o.color) };
+
+  ctx.font = &#x27;12px &quot;Atkinson Hyperlegible&quot;, system-ui, sans-serif&#x27;;
+  ctx.lineWidth = 1;
+  const sx = niceStep(b - a, Math.max(3, Math.floor(pw / 85)));
+  ctx.strokeStyle = c.grid; ctx.fillStyle = c.muted; ctx.textAlign = &#x27;center&#x27;; ctx.textBaseline = &#x27;top&#x27;;
+  for (let k = Math.ceil(a / sx - 1e-9); k &lt;= Math.floor(b / sx + 1e-9); k++) {
+    const t = k * sx, px = Math.round(X(t)) + 0.5;
+    ctx.beginPath(); ctx.moveTo(px, T); ctx.lineTo(px, T + ph); ctx.stroke();
+    ctx.fillText(tickLabel(t, sx), px, T + ph + 6);
+  }
+  const sy = niceStep(y1 - y0, Math.max(3, Math.floor(ph / 48)));
+  ctx.textAlign = &#x27;right&#x27;; ctx.textBaseline = &#x27;middle&#x27;;
+  for (let k = Math.ceil(y0 / sy - 1e-9); k &lt;= Math.floor(y1 / sy + 1e-9); k++) {
+    const t = k * sy, py = Math.round(Y(t)) + 0.5;
+    ctx.beginPath(); ctx.moveTo(L, py); ctx.lineTo(L + pw, py); ctx.stroke();
+    ctx.fillText(tickLabel(t, sy), L - 7, py);
+  }
+  ctx.strokeStyle = c.axis; ctx.lineWidth = 1.3;
+  if (a &lt;= 0 &amp;&amp; b &gt;= 0) { const px = Math.round(X(0)) + 0.5; ctx.beginPath(); ctx.moveTo(px, T); ctx.lineTo(px, T + ph); ctx.stroke(); }
+  if (y0 &lt;= 0 &amp;&amp; y1 &gt;= 0) { const py = Math.round(Y(0)) + 0.5; ctx.beginPath(); ctx.moveTo(L, py); ctx.lineTo(L + pw, py); ctx.stroke(); }
+  ctx.strokeStyle = c.rule; ctx.lineWidth = 1;
+  ctx.strokeRect(L + 0.5, T + 0.5, pw - 1, ph - 1);
+
+  ctx.save();
+  ctx.beginPath(); ctx.rect(L - 7, T - 7, pw + 14, ph + 14); ctx.clip();
+
+  if (o.guide != null) {
+    ctx.save();
+    ctx.strokeStyle = c.muted; ctx.globalAlpha = 0.7; ctx.lineWidth = 1; ctx.setLineDash([3, 4]);
+    const px = X(o.guide);
+    ctx.beginPath(); ctx.moveTo(px, T); ctx.lineTo(px, T + ph); ctx.stroke();
+    ctx.restore();
+  }
+
+  const span = y1 - y0;
+  const strokeSeg = (seg, upTo, alpha) =&gt; {
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = c.curve; ctx.lineWidth = 2.4; ctx.lineJoin = &#x27;round&#x27;; ctx.lineCap = &#x27;round&#x27;; ctx.setLineDash([]);
+    ctx.beginPath();
+    let pen = false, prev = NaN;
+    for (let i = 0; i &lt; seg.xs.length; i++) {
+      const x = seg.xs[i];
+      if (upTo != null &amp;&amp; x &gt; upTo) break;
+      const y = seg.ys[i];
+      if (!Number.isFinite(y)) { pen = false; continue; }
+      if (pen) {
+        const opposite = (prev &gt; y1 &amp;&amp; y &lt; y0) || (prev &lt; y0 &amp;&amp; y &gt; y1);
+        if (opposite || Math.abs(y - prev) &gt; 0.4 * span) pen = false;
+      }
+      const py = Math.max(T - 4 * ph, Math.min(T + 5 * ph, Y(y)));
+      if (!pen) { ctx.moveTo(X(x), py); pen = true; } else ctx.lineTo(X(x), py);
+      prev = y;
+    }
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  };
+  ctx.save();
+  ctx.beginPath(); ctx.rect(L, T, pw, ph); ctx.clip();
+  for (const seg of o.segs) {
+    if (o.trace != null) { strokeSeg(seg, null, 0.16); strokeSeg(seg, o.trace, 1); }
+    else strokeSeg(seg, null, 1);
+  }
+  if (o.tangent) {
+    const t = o.tangent;
+    ctx.save();
+    ctx.strokeStyle = c.tan; ctx.lineWidth = 1.7; ctx.setLineDash([8, 5]);
+    const cl = v =&gt; Math.max(-1e6, Math.min(1e6, Y(v)));
+    ctx.beginPath();
+    if (t.kind === &#x27;vertical&#x27;) {
+      ctx.moveTo(X(t.cx), T); ctx.lineTo(X(t.cx), T + ph);
+    } else if (t.kind === &#x27;corner&#x27;) {
+      ctx.moveTo(X(a), cl(t.cy + t.mL * (a - t.cx))); ctx.lineTo(X(t.cx), cl(t.cy));
+      ctx.moveTo(X(t.cx), cl(t.cy)); ctx.lineTo(X(b), cl(t.cy + t.mR * (b - t.cx)));
+    } else {
+      ctx.moveTo(X(a), cl(t.cy + t.m * (a - t.cx))); ctx.lineTo(X(b), cl(t.cy + t.m * (b - t.cx)));
+    }
+    ctx.stroke();
+    ctx.restore();
+  }
+  ctx.restore();
+
+  const inView = d =&gt; d.y &gt;= y0 &amp;&amp; d.y &lt;= y1;
+  const alphaFor = d =&gt; (o.trace != null &amp;&amp; d.x &gt; o.trace + 1e-12) ? 0.16 : 1;
+  for (const d of o.open) {
+    if (!inView(d)) continue;
+    ctx.globalAlpha = alphaFor(d);
+    ctx.beginPath(); ctx.arc(X(d.x), Y(d.y), 4.6, 0, Math.PI * 2);
+    ctx.fillStyle = c.paper; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = c.curve; ctx.stroke();
+  }
+  for (const d of o.closed) {
+    if (!inView(d)) continue;
+    ctx.globalAlpha = alphaFor(d);
+    ctx.beginPath(); ctx.arc(X(d.x), Y(d.y), 4.8, 0, Math.PI * 2);
+    ctx.fillStyle = c.curve; ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  if (o.marker &amp;&amp; inView(o.marker)) {
+    ctx.beginPath(); ctx.arc(X(o.marker.x), Y(o.marker.y), 6, 0, Math.PI * 2);
+    ctx.fillStyle = c.tan; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = c.paper; ctx.stroke();
+  }
+  ctx.restore();
+}
+
+/* ---------- tangent state ---------- */
+function tangentAt(cx) {
+  const info = S.bpInfo.get(cx);
+  if (S.mode === &#x27;f&#x27;) {
+    if (info) return { cy: info.fp, m: info.m, kind: info.kind, mL: info.dL, mR: info.dR, info };
+    const p = S.pw.find(cx);
+    if (!p) return { cy: NaN, m: NaN, kind: &#x27;undef&#x27; };
+    const cy = p.fn(cx), m = p.dfn(cx);
+    return { cy, m, kind: !Number.isFinite(cy) ? &#x27;undef&#x27; : Number.isFinite(m) ? &#x27;smooth&#x27; : &#x27;nod&#x27; };
+  }
+  const cy = interp(S.antiXs, S.antiF, cx);
+  if (info) { const r = analyzeD(S.pw, cx, cy); return { cy, m: r.m, kind: r.kind, mL: r.dL, mR: r.dR, info: r }; }
+  const m = S.pw.eval(cx);
+  return { cy, m, kind: !Number.isFinite(cy) ? &#x27;undef&#x27; : Number.isFinite(m) ? &#x27;smooth&#x27; : &#x27;nod&#x27; };
+}
+
+function render() {
+  if (!S.ready) return;
+  const cx = S.x0, show = S.show;
+  const t = show ? tangentAt(cx) : null;
+  let tanObj = null;
+  if (t &amp;&amp; t.kind === &#x27;smooth&#x27;) tanObj = { kind: &#x27;smooth&#x27;, cx, cy: t.cy, m: t.m };
+  else if (t &amp;&amp; t.kind === &#x27;corner&#x27;) tanObj = { kind: &#x27;corner&#x27;, cx, cy: t.cy, mL: t.mL, mR: t.mR };
+  else if (t &amp;&amp; t.kind === &#x27;vertical&#x27; &amp;&amp; Number.isFinite(t.cy)) tanObj = { kind: &#x27;vertical&#x27;, cx, cy: t.cy };
+  drawPanel($(&#x27;cvF&#x27;), {
+    segs: S.segF, open: S.dotsF.open, closed: S.dotsF.closed, yr: S.yF, color: &#x27;--f&#x27;,
+    guide: show ? cx : null, tangent: tanObj,
+    marker: t &amp;&amp; Number.isFinite(t.cy) ? { x: cx, y: t.cy } : null
+  });
+  drawPanel($(&#x27;cvD&#x27;), {
+    segs: S.segD, open: S.dotsD.open, closed: S.dotsD.closed, yr: S.yD, color: &#x27;--fp&#x27;,
+    guide: show ? cx : null, trace: show &amp;&amp; $(&#x27;trace&#x27;).checked ? cx : null,
+    marker: t &amp;&amp; t.kind === &#x27;smooth&#x27; ? { x: cx, y: t.m } : null
+  });
+  updateReadout(cx, t);
+}
+
+function updateReadout(cx, t) {
+  const box = $(&#x27;readout&#x27;);
+  if (!t) {
+    box.classList.add(&#x27;off&#x27;);
+    [&#x27;rc&#x27;, &#x27;ry&#x27;, &#x27;rm&#x27;, &#x27;req&#x27;].forEach(id =&gt; $(id).textContent = &#x27;–&#x27;);
+    $(&#x27;rbeh&#x27;).textContent = &#x27;&#x27;;
+    return;
+  }
+  box.classList.remove(&#x27;off&#x27;);
+  $(&#x27;rc&#x27;).textContent = fmtN(cx) + (t.info ? &#x27; (breakpoint)&#x27; : &#x27;&#x27;);
+  $(&#x27;ry&#x27;).textContent = fmtN(t.cy);
+  let slope = &#x27;does not exist&#x27;, eq = &#x27;none&#x27;, beh = &#x27;&#x27;;
+  switch (t.kind) {
+    case &#x27;smooth&#x27;: {
+      slope = fmtN(t.m); eq = lineEq(t.m, cx, t.cy);
+      const tol = 0.004 * (S.yD[1] - S.yD[0]);
+      beh = t.m &gt; tol ? &#x27;f′(c) &gt; 0, so f is increasing near c.&#x27;
+          : t.m &lt; -tol ? &#x27;f′(c) &lt; 0, so f is decreasing near c.&#x27;
+          : &#x27;f′(c) ≈ 0: the tangent line is horizontal here.&#x27;;
+      if (t.info) beh = &#x27;The pieces meet continuously with equal one-sided slopes, so f is differentiable here. &#x27; + beh;
+      break;
+    }
+    case &#x27;corner&#x27;:
+      eq = &#x27;left side &#x27; + lineEq(t.mL, cx, t.cy) + &#x27;; right side &#x27; + lineEq(t.mR, cx, t.cy);
+      beh = &#x27;Corner: the slope from the left is &#x27; + fmtN(t.mL) + &#x27; and from the right is &#x27; + fmtN(t.mR) + &#x27;. They differ, so f′(c) does not exist.&#x27;;
+      break;
+    case &#x27;jump&#x27;:
+      beh = &#x27;f is not continuous at c, so f′(c) does not exist.&#x27;;
+      break;
+    case &#x27;vertical&#x27;:
+      eq = &#x27;x = &#x27; + fmtN(cx) + &#x27; (vertical)&#x27;;
+      beh = &#x27;Vertical tangent: the slopes grow without bound from both sides, so f′(c) does not exist.&#x27;;
+      break;
+    case &#x27;cusp&#x27;:
+      beh = &#x27;Cusp: the slope approaches &#x27; + fmtN(t.mL) + &#x27; from the left and &#x27; + fmtN(t.mR) + &#x27; from the right, so f′(c) does not exist.&#x27;;
+      break;
+    case &#x27;edge&#x27;:
+      beh = &#x27;f is defined on only one side of c, so the two-sided derivative f′(c) does not exist.&#x27;;
+      break;
+    case &#x27;undef&#x27;:
+      $(&#x27;ry&#x27;).textContent = &#x27;undefined&#x27;;
+      beh = &#x27;f is not defined at c.&#x27;;
+      break;
+    default:
+      beh = &#x27;f′(c) does not exist here.&#x27;;
+  }
+  $(&#x27;rm&#x27;).textContent = slope;
+  $(&#x27;req&#x27;).textContent = eq;
+  $(&#x27;rbeh&#x27;).textContent = beh;
+}
+
+/* ---------- breakpoint table ---------- */
+function yesNo(v) { return v ? &#x27;&lt;td class=&quot;yes&quot;&gt;Yes&lt;/td&gt;&#x27; : &#x27;&lt;td class=&quot;no&quot;&gt;No&lt;/td&gt;&#x27;; }
+function renderTable() {
+  const sec = $(&#x27;bpSec&#x27;);
+  if (S.form !== &#x27;pw&#x27; || !S.bps.length) { sec.hidden = true; return; }
+  sec.hidden = false;
+  const head = $(&#x27;bpHead&#x27;), body = $(&#x27;bpBody&#x27;);
+  const esc = s =&gt; String(s).replace(/&amp;/g, &#x27;&amp;amp;&#x27;).replace(/&lt;/g, &#x27;&amp;lt;&#x27;);
+  let rows = &#x27;&#x27;;
+  if (S.mode === &#x27;f&#x27;) {
+    $(&#x27;bpNote&#x27;).textContent = &#x27;At each breakpoint f is continuous when both one-sided limits equal f(x), and differentiable when it is continuous and the one-sided derivatives agree. One-sided derivatives are computed as limits of each piece’s derivative.&#x27;;
+    head.innerHTML = &#x27;&lt;tr&gt;&lt;th&gt;x&lt;/th&gt;&lt;th&gt;f(x)&lt;/th&gt;&lt;th&gt;Limit from left&lt;/th&gt;&lt;th&gt;Limit from right&lt;/th&gt;&lt;th&gt;Continuous&lt;/th&gt;&lt;th&gt;f′ from left&lt;/th&gt;&lt;th&gt;f′ from right&lt;/th&gt;&lt;th&gt;Differentiable&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;/tr&gt;&#x27;;
+    for (const p of S.bps) {
+      const r = S.bpInfo.get(p);
+      const side = (has, cont, d) =&gt; !has ? &#x27;—&#x27; : (cont ? fmtN(d) : &#x27;does not exist&#x27;);
+      rows += &#x27;&lt;tr&gt;&lt;td&gt;&#x27; + fmtN(p) + &#x27;&lt;/td&gt;&lt;td&gt;&#x27; + fmtN(r.fp) + &#x27;&lt;/td&gt;&lt;td&gt;&#x27; + (r.hasL ? fmtN(r.L) : &#x27;—&#x27;) + &#x27;&lt;/td&gt;&lt;td&gt;&#x27; + (r.hasR ? fmtN(r.R) : &#x27;—&#x27;) + &#x27;&lt;/td&gt;&#x27;
+        + yesNo(r.cont &amp;&amp; r.hasL &amp;&amp; r.hasR) + &#x27;&lt;td&gt;&#x27; + side(r.hasL, r.contL, r.dL) + &#x27;&lt;/td&gt;&lt;td&gt;&#x27; + side(r.hasR, r.contR, r.dR) + &#x27;&lt;/td&gt;&#x27;
+        + yesNo(r.kind === &#x27;smooth&#x27;) + &#x27;&lt;td&gt;&lt;button class=&quot;view&quot; data-x=&quot;&#x27; + p + &#x27;&quot;&gt;View&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;&#x27;;
+    }
+  } else {
+    $(&#x27;bpNote&#x27;).textContent = &#x27;The reconstructed f is continuous wherever it is defined, because it is an integral. It is differentiable at a breakpoint only when the one-sided limits of f′ agree; a jump in f′ produces a corner in f.&#x27;;
+    head.innerHTML = &#x27;&lt;tr&gt;&lt;th&gt;x&lt;/th&gt;&lt;th&gt;f(x)&lt;/th&gt;&lt;th&gt;f′ limit from left&lt;/th&gt;&lt;th&gt;f′ limit from right&lt;/th&gt;&lt;th&gt;f differentiable&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;/tr&gt;&#x27;;
+    for (const p of S.bps) {
+      const y = interp(S.antiXs, S.antiF, p);
+      const r = analyzeD(S.pw, p, y);
+      rows += &#x27;&lt;tr&gt;&lt;td&gt;&#x27; + fmtN(p) + &#x27;&lt;/td&gt;&lt;td&gt;&#x27; + fmtN(y) + &#x27;&lt;/td&gt;&lt;td&gt;&#x27; + (r.hasL ? fmtN(r.dL) : &#x27;—&#x27;) + &#x27;&lt;/td&gt;&lt;td&gt;&#x27; + (r.hasR ? fmtN(r.dR) : &#x27;—&#x27;) + &#x27;&lt;/td&gt;&#x27;
+        + yesNo(r.kind === &#x27;smooth&#x27;) + &#x27;&lt;td&gt;&lt;button class=&quot;view&quot; data-x=&quot;&#x27; + p + &#x27;&quot;&gt;View&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;&#x27;;
+    }
+  }
+  body.innerHTML = rows;
+  body.querySelectorAll(&#x27;.view&#x27;).forEach(btn =&gt; btn.addEventListener(&#x27;click&#x27;, () =&gt; {
+    pause(); ensureShown(); S.x0 = +btn.dataset.x; syncSlider(); render();
+  }));
+}
+
+/* ---------- build ---------- */
+function setMsg(id, text) { const el = $(id); el.textContent = text || &#x27;&#x27;; el.classList.toggle(&#x27;show&#x27;, !!text); }
+
+function build() {
+  setMsg(&#x27;err&#x27;, &#x27;&#x27;); setMsg(&#x27;warn&#x27;, &#x27;&#x27;);
+  pause();
+  try {
+    const wantDeriv = S.mode === &#x27;f&#x27;;
+    let pieces;
+    if (S.form === &#x27;one&#x27;) {
+      try { pieces = [Object.assign(compilePiece($(&#x27;expr&#x27;).value, wantDeriv), { lo: -Infinity, hi: Infinity, lc: false, hc: false, loTxt: &#x27;\u2212\u221e&#x27;, hiTxt: &#x27;\u221e&#x27; })]; }
+      catch (e) { throw new Error(e.message.charAt(0).toUpperCase() + e.message.slice(1)); }
+    } else pieces = readPieceRows(wantDeriv);
+    const pw = makePW(pieces);
+    const a = numParse($(&#x27;a&#x27;).value, &#x27;The left endpoint a&#x27;);
+    const b = numParse($(&#x27;b&#x27;).value, &#x27;The right endpoint b&#x27;);
+    if (!(a &lt; b)) throw new Error(&#x27;The graphing interval needs a &lt; b.&#x27;);
+    const bps = S.form === &#x27;pw&#x27; ? breakpointsOf(pw, a, b) : [];
+    const warns = [];
+    if (S.form === &#x27;pw&#x27; &amp;&amp; gapWarning(pw, a, b, bps)) warns.push(&#x27;Part of [a, b] is not covered by any piece, so the function is undefined there.&#x27;);
+    S.a = a; S.b = b; S.pw = pw; S.bps = bps; S.bpInfo = new Map();
+    const pwText = pieces.map(p =&gt; p.disp + (S.form === &#x27;pw&#x27; ? &#x27; if &#x27; + cond(p) : &#x27;&#x27;)).join(&#x27;;  &#x27;);
+    let note;
+
+    if (S.mode === &#x27;f&#x27;) {
+      const gF = pwGraph(pw, a, b, &#x27;fn&#x27;);
+      if (!gF.segs.some(s =&gt; s.ys.some(Number.isFinite)) &amp;&amp; !gF.closed.length) throw new Error(&#x27;f has no real values on this interval.&#x27;);
+      const gD = pwGraph(pw, a, b, &#x27;dfn&#x27;);
+      for (const p of bps) {
+        const r = analyzeF(pw, p);
+        S.bpInfo.set(p, r);
+        if (r.kind === &#x27;smooth&#x27;) gD.closed.push({ x: p, y: r.m });
+      }
+      S.segF = gF.segs; S.dotsF = { open: gF.open, closed: gF.closed };
+      S.segD = gD.segs; S.dotsD = { open: gD.open, closed: gD.closed };
+      $(&#x27;titleF&#x27;).textContent = &#x27;f(x) = &#x27; + pwText;
+      $(&#x27;subF&#x27;).textContent = &#x27;&#x27;;
+      const withD = pieces.filter(p =&gt; p.lo &lt; p.hi);
+      const allSym = withD.every(p =&gt; p.ddisp);
+      $(&#x27;titleD&#x27;).textContent = &#x27;f′(x) = &#x27; + withD.map(p =&gt; (p.ddisp || &#x27;numerical&#x27;) + (S.form === &#x27;pw&#x27; ? &#x27; if &#x27; + cond(p, true) : &#x27;&#x27;)).join(&#x27;;  &#x27;);
+      $(&#x27;subD&#x27;).textContent = S.form === &#x27;pw&#x27; ? &#x27;on the open pieces; see the breakpoint table&#x27; : (allSym ? &#x27;symbolic derivative&#x27; : &#x27;computed numerically&#x27;);
+      note = S.form === &#x27;pw&#x27;
+        ? &#x27;Open circles mark endpoints not included in a piece; filled circles mark included points. On the f′ graph, a filled circle appears at a breakpoint only when f is differentiable there.&#x27;
+        : &#x27;The derivative was found symbolically when possible. For a function with corners, such as abs(x), switch to Piecewise to see the breakpoint analysis.&#x27;;
+    } else {
+      const x0 = $(&#x27;ax&#x27;).value.trim() === &#x27;&#x27; ? a : numParse($(&#x27;ax&#x27;).value, &#x27;The point x₀&#x27;);
+      const C = numParse($(&#x27;ac&#x27;).value, &#x27;The value C&#x27;);
+      if (x0 &lt; a || x0 &gt; b) throw new Error(&#x27;The point x₀ must lie in [a, b].&#x27;);
+      const r = buildAnti(pw, a, b, x0, C, bps, 2400);
+      if (!r.F.some((v, i) =&gt; Number.isFinite(v) &amp;&amp; r.xs[i] !== x0)) throw new Error(&#x27;f′ is undefined next to x₀, so f cannot be reconstructed. Choose a different x₀.&#x27;);
+      if (r.broken) warns.push(&#x27;f′ is undefined somewhere in the interval. f is drawn only on the piece that contains x₀, because the integral cannot be carried across a point where f′ is undefined. Move x₀ to see another piece.&#x27;);
+      S.antiXs = r.xs; S.antiF = r.F;
+      S.segF = [{ xs: r.xs, ys: r.F }]; S.dotsF = { open: [], closed: [] };
+      const gD = pwGraph(pw, a, b, &#x27;fn&#x27;);
+      S.segD = gD.segs; S.dotsD = { open: gD.open, closed: gD.closed };
+      for (const p of bps) S.bpInfo.set(p, true);
+      $(&#x27;titleF&#x27;).textContent = &#x27;f(x) = &#x27; + fmtN(C) + &#x27; + ∫ f′(t) dt from &#x27; + fmtN(x0) + &#x27; to x&#x27;;
+      $(&#x27;subF&#x27;).textContent = &#x27;one antiderivative, with f(&#x27; + fmtN(x0) + &#x27;) = &#x27; + fmtN(C);
+      $(&#x27;titleD&#x27;).textContent = &#x27;f′(x) = &#x27; + pwText;
+      $(&#x27;subD&#x27;).textContent = &#x27;as entered&#x27;;
+      note = &#x27;f was reconstructed numerically with Simpson’s rule, with every breakpoint used as a grid node so no subinterval straddles a jump in f′. It is a graph, not a formula. Every other antiderivative is this graph shifted vertically; change C to see a different member of the family.&#x27;;
+    }
+
+    const vals = arr =&gt; arr.flatMap(s =&gt; s.ys);
+    S.yF = yRange(vals(S.segF).concat(S.dotsF.open.map(d =&gt; d.y), S.dotsF.closed.map(d =&gt; d.y)));
+    S.yD = yRange(vals(S.segD).concat(S.dotsD.open.map(d =&gt; d.y), S.dotsD.closed.map(d =&gt; d.y)));
+    S.x0 = a + 0.3 * (b - a);
+    S.ready = true;
+    $(&#x27;note&#x27;).textContent = note;
+    if (warns.length) setMsg(&#x27;warn&#x27;, warns.join(&#x27; &#x27;));
+    syncSlider();
+    renderTable();
+    render();
+  } catch (e) {
+    setMsg(&#x27;err&#x27;, e.message || String(e));
+  }
+}
+
+/* ---------- animation ---------- */
+function syncSlider() { $(&#x27;pos&#x27;).value = Math.round((S.x0 - S.a) / (S.b - S.a) * 1000); }
+function ensureShown() { if (!S.show) { S.show = true; $(&#x27;showTan&#x27;).checked = true; } }
+function snap(x) {
+  const tol = 0.006 * (S.b - S.a);
+  let best = x, bd = Infinity;
+  for (const p of S.bps) { const d = Math.abs(x - p); if (d &lt; tol &amp;&amp; d &lt; bd) { bd = d; best = p; } }
+  return best;
+}
+function play() {
+  if (!S.ready) return;
+  ensureShown();
+  if (S.x0 &gt;= S.b - 1e-12 * (S.b - S.a)) S.x0 = S.a;
+  S.playing = true; S.lastT = 0; S.holdUntil = 0;
+  $(&#x27;play&#x27;).textContent = &#x27;Pause&#x27;; $(&#x27;play&#x27;).setAttribute(&#x27;aria-pressed&#x27;, &#x27;true&#x27;);
+  S.raf = requestAnimationFrame(tick);
+}
+function pause() {
+  S.playing = false; cancelAnimationFrame(S.raf);
+  $(&#x27;play&#x27;).textContent = &#x27;Play&#x27;; $(&#x27;play&#x27;).setAttribute(&#x27;aria-pressed&#x27;, &#x27;false&#x27;);
+}
+function tick(t) {
+  if (!S.playing) return;
+  if (!S.lastT) S.lastT = t;
+  if (t &lt; S.holdUntil) { S.lastT = t; S.raf = requestAnimationFrame(tick); return; }
+  const dt = Math.min(0.1, (t - S.lastT) / 1000);
+  S.lastT = t;
+  const dur = 12 / parseFloat($(&#x27;speed&#x27;).value);
+  const prev = S.x0;
+  let next = prev + (S.b - S.a) * dt / dur;
+  if ($(&#x27;stopBp&#x27;).checked) {
+    const hit = S.bps.find(p =&gt; p &gt; prev &amp;&amp; p &lt;= next);
+    if (hit !== undefined) { next = hit; S.holdUntil = t + 1400; }
+  }
+  S.x0 = next;
+  if (S.x0 &gt;= S.b &amp;&amp; S.holdUntil &lt;= t) {
+    if ($(&#x27;loop&#x27;).checked) S.x0 = S.a;
+    else { S.x0 = S.b; syncSlider(); render(); pause(); return; }
+  }
+  syncSlider(); render();
+  S.raf = requestAnimationFrame(tick);
+}
+
+/* ---------- piece editor ---------- */
+function addPieceRow(d) {
+  d = d || { e: &#x27;&#x27;, lb: &#x27;(&#x27;, lo: &#x27;&#x27;, hi: &#x27;&#x27;, rb: &#x27;)&#x27; };
+  const row = document.createElement(&#x27;div&#x27;);
+  row.className = &#x27;piece&#x27;;
+  row.innerHTML =
+    &#x27;&lt;input type=&quot;text&quot; class=&quot;pe&quot; autocomplete=&quot;off&quot; spellcheck=&quot;false&quot; placeholder=&quot;expression in x&quot; aria-label=&quot;Piece expression&quot;&gt;&#x27; +
+    &#x27;&lt;div class=&quot;dom&quot;&gt;&lt;span&gt;on&lt;/span&gt;&#x27; +
+    &#x27;&lt;select class=&quot;lb&quot; aria-label=&quot;Left endpoint included?&quot;&gt;&lt;option value=&quot;(&quot;&gt;(&lt;/option&gt;&lt;option value=&quot;[&quot;&gt;[&lt;/option&gt;&lt;/select&gt;&#x27; +
+    &#x27;&lt;input type=&quot;text&quot; class=&quot;plo&quot; autocomplete=&quot;off&quot; aria-label=&quot;Left end of domain&quot; placeholder=&quot;-inf&quot;&gt;&#x27; +
+    &#x27;&lt;span&gt;,&lt;/span&gt;&#x27; +
+    &#x27;&lt;input type=&quot;text&quot; class=&quot;phi&quot; autocomplete=&quot;off&quot; aria-label=&quot;Right end of domain&quot; placeholder=&quot;inf&quot;&gt;&#x27; +
+    &#x27;&lt;select class=&quot;rb&quot; aria-label=&quot;Right endpoint included?&quot;&gt;&lt;option value=&quot;)&quot;&gt;)&lt;/option&gt;&lt;option value=&quot;]&quot;&gt;]&lt;/option&gt;&lt;/select&gt;&#x27; +
+    &#x27;&lt;button type=&quot;button&quot; class=&quot;rm&quot; aria-label=&quot;Remove this piece&quot;&gt;×&lt;/button&gt;&lt;/div&gt;&#x27;;
+  row.querySelector(&#x27;.pe&#x27;).value = d.e;
+  row.querySelector(&#x27;.lb&#x27;).value = d.lb;
+  row.querySelector(&#x27;.plo&#x27;).value = d.lo;
+  row.querySelector(&#x27;.phi&#x27;).value = d.hi;
+  row.querySelector(&#x27;.rb&#x27;).value = d.rb;
+  row.querySelector(&#x27;.rm&#x27;).addEventListener(&#x27;click&#x27;, () =&gt; {
+    if (document.querySelectorAll(&#x27;#pieces .piece&#x27;).length &gt; 1) { row.remove(); relabel(); }
+  });
+  row.querySelectorAll(&#x27;input&#x27;).forEach(inp =&gt; inp.addEventListener(&#x27;keydown&#x27;, e =&gt; { if (e.key === &#x27;Enter&#x27;) build(); }));
+  $(&#x27;pieces&#x27;).appendChild(row);
+  relabel();
+  return row;
+}
+function relabel() {
+  document.querySelectorAll(&#x27;#pieces .piece&#x27;).forEach((r, i) =&gt; r.querySelector(&#x27;.pe&#x27;).setAttribute(&#x27;aria-label&#x27;, &#x27;Piece &#x27; + (i + 1) + &#x27; expression&#x27;));
+}
+function loadPieces(list) { $(&#x27;pieces&#x27;).innerHTML = &#x27;&#x27;; list.forEach(addPieceRow); }
+
+/* ---------- UI wiring ---------- */
+function renderChips() {
+  const box = $(&#x27;chips&#x27;); box.innerHTML = &#x27;&#x27;;
+  const key = S.mode + &#x27;_&#x27; + S.form;
+  PRESETS[key].forEach(p =&gt; {
+    const btn = document.createElement(&#x27;button&#x27;);
+    btn.className = &#x27;chip&#x27;; btn.type = &#x27;button&#x27;;
+    btn.textContent = p.label || p.e.replace(/-/g, &#x27;\u2212&#x27;);
+    btn.addEventListener(&#x27;click&#x27;, () =&gt; {
+      if (S.form === &#x27;one&#x27;) $(&#x27;expr&#x27;).value = p.e; else loadPieces(p.pieces);
+      $(&#x27;a&#x27;).value = p.a; $(&#x27;b&#x27;).value = p.b;
+      if (S.mode === &#x27;d&#x27;) { $(&#x27;ax&#x27;).value = p.x0 || &#x27;&#x27;; $(&#x27;ac&#x27;).value = p.c || &#x27;0&#x27;; }
+      build();
+    });
+    box.appendChild(btn);
+  });
+}
+function applyPreset(p) {
+  if (S.form === &#x27;one&#x27;) $(&#x27;expr&#x27;).value = p.e; else loadPieces(p.pieces);
+  $(&#x27;a&#x27;).value = p.a; $(&#x27;b&#x27;).value = p.b;
+  if (S.mode === &#x27;d&#x27;) { $(&#x27;ax&#x27;).value = p.x0 || &#x27;&#x27;; $(&#x27;ac&#x27;).value = p.c || &#x27;0&#x27;; }
+}
+function refreshLabels() {
+  const sym = S.mode === &#x27;f&#x27; ? &#x27;f(x)&#x27; : &#x27;f′(x)&#x27;;
+  $(&#x27;exprLabel&#x27;).textContent = sym + &#x27; =&#x27;;
+  $(&#x27;pwLabel&#x27;).textContent = sym + &#x27; is defined by these pieces&#x27;;
+  $(&#x27;icBox&#x27;).hidden = S.mode !== &#x27;d&#x27;;
+  $(&#x27;oneBox&#x27;).hidden = S.form !== &#x27;one&#x27;;
+  $(&#x27;pwBox&#x27;).hidden = S.form !== &#x27;pw&#x27;;
+}
+document.querySelectorAll(&#x27;input[name=mode]&#x27;).forEach(r =&gt; r.addEventListener(&#x27;change&#x27;, e =&gt; {
+  if (!e.target.checked) return;
+  S.mode = e.target.value; refreshLabels(); renderChips(); build();
+}));
+document.querySelectorAll(&#x27;input[name=form]&#x27;).forEach(r =&gt; r.addEventListener(&#x27;change&#x27;, e =&gt; {
+  if (!e.target.checked) return;
+  S.form = e.target.value; refreshLabels(); renderChips();
+  if (S.form === &#x27;pw&#x27;) applyPreset(PRESETS[S.mode + &#x27;_pw&#x27;][S.mode === &#x27;f&#x27; ? 1 : 0]);
+  build();
+}));
+$(&#x27;addPiece&#x27;).addEventListener(&#x27;click&#x27;, () =&gt; { addPieceRow().querySelector(&#x27;.pe&#x27;).focus(); });
+$(&#x27;go&#x27;).addEventListener(&#x27;click&#x27;, build);
+[&#x27;expr&#x27;, &#x27;a&#x27;, &#x27;b&#x27;, &#x27;ax&#x27;, &#x27;ac&#x27;].forEach(id =&gt; $(id).addEventListener(&#x27;keydown&#x27;, e =&gt; { if (e.key === &#x27;Enter&#x27;) build(); }));
+$(&#x27;play&#x27;).addEventListener(&#x27;click&#x27;, () =&gt; S.playing ? pause() : play());
+$(&#x27;reset&#x27;).addEventListener(&#x27;click&#x27;, () =&gt; { if (!S.ready) return; pause(); ensureShown(); S.x0 = S.a; syncSlider(); render(); });
+$(&#x27;pos&#x27;).addEventListener(&#x27;input&#x27;, e =&gt; {
+  if (!S.ready) return;
+  pause(); ensureShown();
+  S.x0 = snap(S.a + (S.b - S.a) * (+e.target.value) / 1000);
+  render();
+});
+$(&#x27;showTan&#x27;).addEventListener(&#x27;change&#x27;, e =&gt; { S.show = e.target.checked; if (!S.show) pause(); render(); });
+$(&#x27;trace&#x27;).addEventListener(&#x27;change&#x27;, render);
+
+function hookCanvas(cv) {
+  const setFrom = e =&gt; {
+    const r = cv.getBoundingClientRect();
+    const pw = r.width - PAD.L - PAD.R;
+    let t = (e.clientX - r.left - PAD.L) / pw;
+    t = Math.max(0, Math.min(1, t));
+    S.x0 = snap(S.a + t * (S.b - S.a));
+    ensureShown(); syncSlider(); render();
+  };
+  cv.addEventListener(&#x27;pointerdown&#x27;, e =&gt; {
+    if (!S.ready) return;
+    pause();
+    try { cv.setPointerCapture(e.pointerId); } catch (_) {}
+    setFrom(e);
+  });
+  cv.addEventListener(&#x27;pointermove&#x27;, e =&gt; { if (S.ready &amp;&amp; cv.hasPointerCapture &amp;&amp; cv.hasPointerCapture(e.pointerId)) setFrom(e); });
+}
+hookCanvas($(&#x27;cvF&#x27;)); hookCanvas($(&#x27;cvD&#x27;));
+
+if (window.ResizeObserver) new ResizeObserver(() =&gt; render()).observe(document.querySelector(&#x27;.plots&#x27;));
+else window.addEventListener(&#x27;resize&#x27;, render);
+try { window.matchMedia(&#x27;(prefers-color-scheme: dark)&#x27;).addEventListener(&#x27;change&#x27;, render); } catch (_) {}
+new MutationObserver(render).observe(document.documentElement, { attributes: true, attributeFilter: [&#x27;data-theme&#x27;] });
+if (document.fonts &amp;&amp; document.fonts.ready) document.fonts.ready.then(render);
+
+applyPreset(PRESETS.f_pw[1]);
+refreshLabels();
+renderChips();
+build();
+
+})();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+" hidden></iframe>
+<script>
+(function(){
+  const frames=[document.getElementById('p1'),document.getElementById('p2')];
+  const tabs=[document.getElementById('t1'),document.getElementById('t2')];
+  function syncTheme(f){
+    try{
+      const d=f.contentDocument; if(!d||!d.documentElement) return;
+      const t=document.documentElement.getAttribute('data-theme');
+      if(t) d.documentElement.setAttribute('data-theme',t); else d.documentElement.removeAttribute('data-theme');
+    }catch(_){}
+  }
+  function fit(f){
+    try{
+      const d=f.contentDocument; if(!d||!d.body) return;
+      const h=Math.ceil(d.body.getBoundingClientRect().height)+4;
+      if(h>50 && Math.abs(h-f.offsetHeight)>2) f.style.height=h+'px';
+    }catch(_){}
+  }
+  frames.forEach(f=>{
+    f.addEventListener('load',()=>{
+      syncTheme(f); fit(f);
+      try{ if(window.ResizeObserver) new ResizeObserver(()=>fit(f)).observe(f.contentDocument.body); }catch(_){}
+    });
+  });
+  function select(i){
+    tabs.forEach((t,j)=>{ t.setAttribute('aria-selected',j===i?'true':'false'); t.tabIndex=j===i?0:-1; frames[j].hidden=j!==i; });
+    requestAnimationFrame(()=>fit(frames[i]));
+  }
+  tabs.forEach((t,i)=>{
+    t.addEventListener('click',()=>select(i));
+    t.addEventListener('keydown',e=>{
+      if(e.key==='ArrowRight'||e.key==='ArrowLeft'){ const k=(i+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length; select(k); tabs[k].focus(); e.preventDefault(); }
+    });
+  });
+  new MutationObserver(()=>frames.forEach(syncTheme)).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+  window.addEventListener('resize',()=>frames.forEach(f=>{ if(!f.hidden) fit(f); }));
+})();
+</script>
+</body>
+</html>
